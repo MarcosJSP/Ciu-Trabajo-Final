@@ -10,7 +10,7 @@ int status;
 Controller a;
 Capture cam;
 
-NaveJugador jugador1;
+PlayerShip jugador1;
 Bullet bala1;
 
 ArrayList<GameObject> gameObjects;
@@ -21,10 +21,8 @@ void setup(){
   //cam = new Capture(this, width/2, height);
   //a= new Controller(cam);
   gameObjects = new ArrayList<GameObject>();
-  jugador1 = new NaveJugador(50,50);
+  jugador1 = new PlayerShip(50,50,new Weapon(20,0,-5));
   
-  bala1 = new Bullet(50,20,10);
-  gameObjects.add(bala1);
   gameObjects.add(jugador1);
 }
 
@@ -40,8 +38,9 @@ void draw(){
         if (i == gameObjects.size()-1) {
           obj.setPosition(mouseX,mouseY);
         }
-      
-        if (obj.hasDied()) gameObjects.remove(i);
+        
+        if (obj.hasDied() ||obj.getPostion()[1] >height+40 || obj.getPostion()[1]<-40 || obj.getPostion()[0] <-40 ||obj.getPostion()[0]>width+40) gameObjects.remove(i);
+        println(gameObjects.size());
         i--;
       }
     
@@ -57,8 +56,11 @@ void draw(){
 
 void mouseDragged(){
   //a.mouseD();
+  gameObjects.add(0,jugador1.shoot());
 }
 
 void mousePressed() {
-  //a.mouseP();  
+  //a.mouseP();
+  
+  
 }
