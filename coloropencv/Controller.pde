@@ -8,6 +8,7 @@ import java.awt.Color;
 
 class Controller {
   Capture cam;
+  PImage lastCamFrame=null;
   CVImage img, auximg;
   Rect recognizedRect = null;
 
@@ -23,10 +24,10 @@ class Controller {
     this.cam=cam;
     cam.start();
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    
+
     img = new CVImage(cam.width, cam.height);
     auximg=new CVImage(cam.width, cam.height);
-    
+
     Slider lowerHueSlider = new Slider(200, 25, 0, 180, lowerHue, "lowerHue");
     Slider upperHueSlider = new Slider(200, 25, 0, 180, upperHue, "upperHue");
     Slider lowerSatSlider = new Slider(200, 25, 0, 255, lowerSat, "lowerSat");
@@ -36,16 +37,26 @@ class Controller {
 
     sliders = new Slider []{lowerHueSlider, upperHueSlider, lowerSatSlider, upperSatSlider, lowerValSlider, upperValSlider};
   }
-  
-  void updateColorDetection(){
+
+  PImage mirrorImage(PImage img) {
+
+    PImage mirrorImg = createImage(img.width, img.height, ARGB);
+
+    for (int y = 0; y < img.height; y++) {
+      for (int x = 0; x < img.width; x++) {
+        mirrorImg.set(img.width-x-1, y, img.get(x, y));
+      }
+    }
+
+    return mirrorImg;
+  }
+
+  void updateColorDetection() {
     if (!cam.available()) return;
-      cam.read();
-      img.copy(cam, 0, 0, cam.width, cam.height, 
-        0, 0, img.width, img.height);
-      auximg.copy(cam, 0, 0, cam.width, cam.height, 
-        0, 0, img.width, img.height);
-      img.copyTo();
-      auximg.copyTo();
+    cam.read();
+    lastCamFrame = mirrorImage(cam);
+    img.set(0,0,lastCamFrame);
+    img.copyTo();
 
     //Cambiamos el filtro de bgr a Hsv
     Mat bgr = img.getBGR();
@@ -67,13 +78,13 @@ class Controller {
     Mat hsvErode =  new Mat();
     Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(erosion_size, erosion_size));
     Imgproc.erode(hsvRange, hsvErode, element);
-    
+
     //Dilatamos la imagen
     int dilation_size = 25;
     Mat hsvDilate =  new Mat();
     Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(dilation_size, dilation_size));
     Imgproc.dilate(hsvErode, hsvDilate, element1);
-    
+
     //Hallamos la posición y el tamaño del objeto más grande identificado
     ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
     Mat hsvContours = new Mat();
@@ -84,7 +95,9 @@ class Controller {
       Imgproc.rectangle(hsvDilate, rect, new Scalar(255, 0, 255), 5);
       contours.clear();
       setRecognizedRect(rect);
-    } 
+    } else {
+      setRecognizedRect(null);
+    }
 
     //Finalmente actualizamos la imagen con los filtros
     img.copyTo(hsvDilate);
@@ -92,20 +105,20 @@ class Controller {
 
   void drawController() {
     push();
-    translate(0,height/2-img.height/2);
-    scale(-1,1);//reversing x
-    
+    translate(0, height/2-img.height/2);
+
     //left
-    image(img, -img.width, 0);
-    translate(-width/2,0);
-    
+    image(img, 0, 0);
+    translate(width/2, 0);
+
     //right
-    image(auximg,-img.width, 0);
+    //image(auximg, 0, 0);
+    image(lastCamFrame, 0,0);
     Rect rect = getRecognizedRect();
-    if(rect!=null){
+    if (rect!=null) {
       noFill();
-      stroke(250,0,0);
-      rect(-img.width+rect.x, rect.y, rect.width, rect.height);
+      stroke(250, 0, 0);
+      rect(rect.x, rect.y, rect.width, rect.height);
     }
     pop();
     drawSliders();
@@ -124,12 +137,12 @@ class Controller {
     lowerHue = hue - 10;
     upperHue = hue + 10;
   }
-  
-  void setRecognizedRect(Rect rect){
+
+  void setRecognizedRect(Rect rect) {
     this.recognizedRect = rect;
   }
-  
-  Rect getRecognizedRect(){
+
+  Rect getRecognizedRect() {
     return this.recognizedRect;
   }
 
@@ -152,7 +165,7 @@ class Controller {
       int hue = int(map(hue(c), 0, 255, 0, 180));
       lowerHue = hue - 10;
       upperHue = hue + 10;
-      if (lowerHue < 0) lowerHue = 180 + lowerHue;
+      //if (lowerHue < 0) lowerHue = 180 + lowerHue;
       //if (upperHue > 180) upperHue = upperHue - 180;
       sliders[0].setValue(lowerHue);
       sliders[1].setValue(upperHue);

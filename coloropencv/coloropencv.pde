@@ -48,7 +48,7 @@ void draw(){
     //bala1.show();
     //bala1.movement(0,5);
   }
-  
+  println("Frames: " + frameRate);
 }
 
 
