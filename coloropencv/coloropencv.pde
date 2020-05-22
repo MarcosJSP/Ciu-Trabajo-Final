@@ -22,6 +22,7 @@ void setup(){
   //a= new Controller(cam);
   gameObjects = new ArrayList<GameObject>();
   jugador1 = new NaveJugador(50,50);
+  
   bala1 = new Bullet(50,20,10);
   gameObjects.add(bala1);
   gameObjects.add(jugador1);
@@ -36,6 +37,10 @@ void draw(){
       while (i >=0 ) {
         GameObject obj = gameObjects.get(i);  
         obj.show();
+        if (i == gameObjects.size()-1) {
+          obj.setPosition(mouseX,mouseY);
+        }
+      
         if (obj.hasDied()) gameObjects.remove(i);
         i--;
       }

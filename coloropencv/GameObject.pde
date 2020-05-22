@@ -8,7 +8,7 @@ abstract class GameObject {
   void show(){ 
   }
   
-  void setPosition(){
+  void setPosition(int x,int y){
   }  
   
   void movement(int vx, int vy){
