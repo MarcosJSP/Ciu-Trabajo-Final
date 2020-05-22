@@ -16,10 +16,10 @@ Bullet bala1;
 ArrayList<GameObject> gameObjects;
 
 void setup(){
-  size(1280, 480, P3D);
-  status = 1;
-  //cam = new Capture(this, width/2, height);
-  //a= new Controller(cam);
+  size(1280, 720, P3D);
+  status = 0;
+  cam = new Capture(this, 1280/2, 480);
+  a= new Controller(cam);
   gameObjects = new ArrayList<GameObject>();
   jugador1 = new NaveJugador(50,50);
   bala1 = new Bullet(50,20,10);
@@ -28,7 +28,9 @@ void setup(){
 }
 
 void draw(){
+  background(200);
   if (status == 0) {
+    a.updateColorDetection();
     a.drawController();
   } else if (status == 1) {
     background(0);
@@ -51,9 +53,9 @@ void draw(){
 
 
 void mouseDragged(){
-  //a.mouseD();
+  a.mouseD();
 }
 
 void mousePressed() {
-  //a.mouseP();  
+  a.mouseP();  
 }

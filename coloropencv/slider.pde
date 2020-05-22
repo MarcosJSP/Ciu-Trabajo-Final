@@ -19,7 +19,7 @@ class Slider{
     fill(200);
     rect(0,0,map(this.val, this.min, this.max, 0, w),h);
     fill(0);
-    textSize(20);
+    textSize(this.h/2);
     text(this.title + " " +this.val,0,this.h/2);  
   }
   
