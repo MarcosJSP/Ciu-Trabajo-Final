@@ -1,7 +1,7 @@
 class PlayerShip extends Ship {
   
-  PlayerShip(float x, float y,Weapon weapon) {
-    super(x,y,weapon);
+  PlayerShip(float x, float y) {
+    super(x,y);
   }  
   
   @Override   

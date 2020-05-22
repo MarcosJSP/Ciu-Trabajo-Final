@@ -21,7 +21,8 @@ void setup(){
   //cam = new Capture(this, width/2, height);
   //a= new Controller(cam);
   gameObjects = new ArrayList<GameObject>();
-  jugador1 = new PlayerShip(50,50,new Weapon(20,0,-5));
+  jugador1 = new PlayerShip(50,50);
+  
   
   gameObjects.add(jugador1);
 }
@@ -56,7 +57,16 @@ void draw(){
 
 void mouseDragged(){
   //a.mouseD();
+  if(mouseButton==LEFT){
+    jugador1.setWeapon(new Weapon(5,0,-8));
+    
+  }else{
+    jugador1.setWeapon(new Weapon(20,0,-4));
+    
+  }
+  
   gameObjects.add(0,jugador1.shoot());
+  
 }
 
 void mousePressed() {

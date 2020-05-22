@@ -2,14 +2,15 @@ class Ship extends GameObject {
   
   Weapon weapon;
   
-  Ship(float x, float y,Weapon weapon) {
+  Ship(float x, float y) {
     this.x = x;
     this.y = y;
     this.dx = 0;
     this.dy = 5;
-    this.weapon=weapon;
   }  
-   
+  void setWeapon(Weapon weapon){
+    this.weapon=weapon;
+  } 
   void show() {
     fill(255);
     //x = x + vx;
@@ -18,6 +19,7 @@ class Ship extends GameObject {
   }
   
   Bullet shoot(){
+    if(weapon==null)return null;
     return weapon.shoot(this.x,this.y);
   }
     
