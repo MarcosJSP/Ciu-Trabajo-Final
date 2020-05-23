@@ -1,6 +1,4 @@
-class CDCalibrator{
-  Capture cam;
-  
+class CDCalibrator{  
   float lowerHue = 63;
   float upperHue = 83;
   float lowerSat = 60;
@@ -8,8 +6,7 @@ class CDCalibrator{
   float lowerVal = 80;
   float upperVal = 255;
   
-  CDCalibrator(Capture cam){
-    this.cam = cam;
+  CDCalibrator(){
   }
   
   Scalar getLowerHSV(){

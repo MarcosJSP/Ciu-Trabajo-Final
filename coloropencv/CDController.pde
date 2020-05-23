@@ -6,40 +6,24 @@ import org.opencv.core.*;
 import java.awt.Color;
 
 
-class Controller {
+class CDController {
   Capture cam;
   PImage lastCamFrame=null;
   CVImage img, auximg;
   Rect recognizedRect = null;
-
-  float lowerHue = 63;
-  float upperHue = 83;
-  float lowerSat = 60;
-  float upperSat = 130;
-  float lowerVal = 80;
-  float upperVal = 255;
-  Slider [] sliders;
-
-  Controller(Capture cam) {
+  
+  CDCalibrator cdCalibrator;
+  CDController(Capture cam, CDCalibrator cdCalibrator) {
     this.cam=cam;
+    this.cdCalibrator = cdCalibrator;
     cam.start();
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
     img = new CVImage(cam.width, cam.height);
     auximg=new CVImage(cam.width, cam.height);
-
-    Slider lowerHueSlider = new Slider(200, 25, 0, 180, lowerHue, "lowerHue");
-    Slider upperHueSlider = new Slider(200, 25, 0, 180, upperHue, "upperHue");
-    Slider lowerSatSlider = new Slider(200, 25, 0, 255, lowerSat, "lowerSat");
-    Slider upperSatSlider = new Slider(200, 25, 0, 255, upperSat, "upperSat");
-    Slider lowerValSlider = new Slider(200, 25, 0, 255, lowerVal, "lowerVal");
-    Slider upperValSlider = new Slider(200, 25, 0, 255, upperVal, "upperVal");
-
-    sliders = new Slider []{lowerHueSlider, upperHueSlider, lowerSatSlider, upperSatSlider, lowerValSlider, upperValSlider};
   }
 
   PImage mirrorImage(PImage img) {
-
     PImage mirrorImg = createImage(img.width, img.height, ARGB);
 
     for (int y = 0; y < img.height; y++) {
@@ -69,9 +53,9 @@ class Controller {
 
     //Resaltamos el color que nos interesa
     Mat hsvRange = new Mat();
-    Scalar lower = new Scalar(lowerHue, lowerSat, lowerVal);
-    Scalar upper = new Scalar(upperHue, upperSat, upperVal);
-    Core.inRange(hsvBlur, lower, upper, hsvRange);
+    Scalar lowerHSV = cdCalibrator.getLowerHSV();
+    Scalar upperHSV = cdCalibrator.getUpperHSV();
+    Core.inRange(hsvBlur, lowerHSV, upperHSV, hsvRange);
 
     //Erosionamos la imagen
     int erosion_size = 4;
@@ -102,8 +86,8 @@ class Controller {
     //Finalmente actualizamos la imagen con los filtros
     img.copyTo(hsvDilate);
   }
-
-  void drawController() {
+  
+  void draw() {
     push();
     translate(0, height/2-img.height/2);
 
@@ -121,21 +105,6 @@ class Controller {
       rect(rect.x, rect.y, rect.width, rect.height);
     }
     pop();
-    drawSliders();
-  }
-
-  void drawSliders() {
-    for (int i = 0; i < sliders.length; i++) {
-      sliders[i].draw();
-      translate(0, sliders[i].h);
-    }
-  }
-
-  void updateHue(Color rgb) {
-    float [] hsv = Color.RGBtoHSB(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), null);
-    float hue = hsv[0] * 180;
-    lowerHue = hue - 10;
-    upperHue = hue + 10;
   }
 
   void setRecognizedRect(Rect rect) {
@@ -145,30 +114,13 @@ class Controller {
   Rect getRecognizedRect() {
     return this.recognizedRect;
   }
-
-  void mouseD() {
-    for (int i = 0; i < sliders.length; i++) {
-      sliders[i].mouseDragged();
-    }
-    lowerHue = sliders[0].getVal();
-    upperHue = sliders[1].getVal();
-    lowerSat = sliders[2].getVal();
-    upperSat = sliders[3].getVal();
-    lowerVal = sliders[4].getVal();
-    upperVal = sliders[5].getVal();
+  
+  PImage getOriginalImage(){
+    return lastCamFrame;
+  }
+  
+  PImage getFilteredImage(){
+    return img;
   }
 
-  void mouseP() {
-    if (mouseButton == RIGHT) {
-      //colorMode(HSB,255);
-      color c = get(mouseX, mouseY);
-      int hue = int(map(hue(c), 0, 255, 0, 180));
-      lowerHue = hue - 10;
-      upperHue = hue + 10;
-      //if (lowerHue < 0) lowerHue = 180 + lowerHue;
-      //if (upperHue > 180) upperHue = upperHue - 180;
-      sliders[0].setValue(lowerHue);
-      sliders[1].setValue(upperHue);
-    }
-  }
 }
