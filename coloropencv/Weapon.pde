@@ -3,7 +3,7 @@ class Weapon{
   float vx,vy,size;
   
   
-  Weapon(int size,int vx,int vy){
+  Weapon(int vx,int vy,int size){
   this.size=size;
   this.vx=vx;
   this.vy= vy;

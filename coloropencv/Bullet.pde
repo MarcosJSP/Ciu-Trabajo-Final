@@ -9,6 +9,11 @@ class Bullet extends GameObject {
     this.bulletSize = size;
   }
   
+  float getSize () {
+    return this.bulletSize;
+  }
+  
+  
   void show () {
     fill (255,0,0);
     
