@@ -8,6 +8,8 @@ import java.awt.Color;
 
 int status;
 DebugCDCalibrator debugCDCalibrator;
+InGameCDCalibrator ingameCDCalibrator;
+
 CDController cdController;
 
 Capture cam;
@@ -19,12 +21,13 @@ ArrayList<GameObject> gameObjects;
 
 void setup() {
   size(1280, 720, P3D);
-  status = 0;
+  status = 1;
   cam = new Capture(this, 1280/2, 480);
 
   debugCDCalibrator = new DebugCDCalibrator();
+  ingameCDCalibrator = new InGameCDCalibrator();
 
-  cdController = new CDController(cam, debugCDCalibrator);
+  cdController = new CDController(cam, ingameCDCalibrator);
   gameObjects = new ArrayList<GameObject>();
   jugador1 = new NaveJugador(50, 50);
   bala1 = new Bullet(50, 20, 10);
@@ -39,7 +42,7 @@ void draw() {
   if (status == 0) {
     drawDebugScreen();
   } else if (status == 1) {
-    
+    drawIngameScreen();
   } else if (status == 2) {
     background(0);
     int i = gameObjects.size()-1;    
@@ -63,6 +66,7 @@ void drawDebugScreen() {
   PImage originalImg = cdController.getOriginalImage();
   PImage filteredImg = cdController.getFilteredImage();
   Rect rect = cdController.getRecognizedRect();
+  CDCalibrator calibrator = cdController.getCalibrator();
   push();
   translate(0, height/2-originalImg.height/2);
 
@@ -78,14 +82,32 @@ void drawDebugScreen() {
     rect(rect.x, rect.y, rect.width, rect.height);
   }
   pop();
-  debugCDCalibrator.draw();
+  calibrator.draw();
 }
 
+void drawIngameScreen(){
+  PImage img = cdController.getOriginalImage();
+  if(img == null) return;
+  CDCalibrator calibrator = cdController.getCalibrator();
+  Rect rect = cdController.getRecognizedRect();
+  push();
+  translate(width/2-img.width/2, height/2-img.height/2);
+  image(img, 0, 0);
+  if (rect!=null) {
+    noFill();
+    stroke(250, 0, 0);
+    rect(rect.x, rect.y, rect.width, rect.height);
+  }
+  pop();
+  calibrator.draw();
+}
 
 void mouseDragged() {
-  debugCDCalibrator.mouseDragged();
+  CDCalibrator calibrator = cdController.getCalibrator();
+  calibrator.mouseDragged();
 }
 
 void mousePressed() {
-  debugCDCalibrator.mousePressed();
+  CDCalibrator calibrator = cdController.getCalibrator();
+  calibrator.mousePressed();
 }

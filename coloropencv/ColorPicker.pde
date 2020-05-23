@@ -8,7 +8,7 @@ class ColorPicker{
   ColorPicker(int w, int h){
     this.w = w;
     this.h = h;
-    this.colorBand = loadImage("colorBand.png");
+    this.colorBand = loadImage("./Assets/colorBand.png");
     this.colorBand.resize(this.w, this.h);
     this.selectedColor = this.colorBand.get(0,0);
   }

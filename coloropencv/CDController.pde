@@ -122,5 +122,16 @@ class CDController {
   PImage getFilteredImage(){
     return img;
   }
+  
+  CDCalibrator getCalibrator(){
+    return cdCalibrator;
+  }
+  
+  boolean ready(){
+    return 
+      cdCalibrator != null
+      && lastCamFrame != null
+      && img != null;
+  }
 
 }

@@ -17,4 +17,13 @@ class CDCalibrator{
     return new Scalar(upperHue, upperSat, upperVal);
   }
   
+  void draw(){
+  }
+  
+  void mouseDragged(){
+  }
+  
+  void mousePressed() {
+  }
+  
 }
