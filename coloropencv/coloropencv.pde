@@ -19,7 +19,7 @@ Bullet bala1;
 ArrayList<GameObject> gameObjects;
 
 void setup() {
-  size(1280, 480, P3D);
+  size(1920, 1080, P3D);
   status = 1;
   //cam = new Capture(this, width/2, height);
   //a= new Controller(cam);
@@ -41,26 +41,30 @@ void draw() {
 
       GameObject obj = gameObjects.get(i);  
       obj.show();
-      if (i == gameObjects.size()-1) {
+      
+      // seccion de tratamiento de la nave del jugador
+      if (obj instanceof PlayerShip) {
         obj.setPosition(mouseX, mouseY);
       }
 
+      // seccion de tratamiento de los enemigos
       if (obj instanceof EnemyShip) {
         if (obj.getPostion()[0] - obj.getSize()/2 <= 0 ||obj.getPostion()[0] + obj.getSize()/2 >= width) {
           value = - value;
           obj.movement(value, 0);
         }
         
-        if (count == 5 ) gameObjects.add(0, obj.shoot());
+        if (count == 10 ) gameObjects.add(0, obj.shoot());
       }
 
-
+      
+      // seccion de colisiones
 
       if (obj.hasDied() ||obj.getPostion()[1] >height+40 || obj.getPostion()[1]<-40 || obj.getPostion()[0] <-40 ||obj.getPostion()[0]>width+40) gameObjects.remove(i);
       //println(gameObjects.size());
       i--;
     }
-    if (count > 5) {
+    if (count > 10) {
       count = 0;
     }
     count++;
@@ -74,9 +78,9 @@ void draw() {
 
 
 void setupObjects() {
-  jugador1 = new PlayerShip(50, 50, 10);
-  enemigo1 = new EnemyShip(500, 50, 10);
-  enemigo1.setWeapon(new Weapon(0, 5, 8));
+  jugador1 = new PlayerShip(50, 50, 20,1);
+  enemigo1 = new EnemyShip(width/2, height/16, 50,1);
+  enemigo1.setWeapon(new Weapon(0, 3, 20,color(255,0,0),1));
   enemigo1.movement(5, 0);
 
 
@@ -102,9 +106,9 @@ void setupObjects() {
 void mousePressed() {
   //a.mouseP();
   if (mouseButton==LEFT) {
-    jugador1.setWeapon(new Weapon(0, -8, 5));
+    jugador1.setWeapon(new Weapon(0, -8, 20,color(0,0,255),1));
   } else {
-    jugador1.setWeapon(new Weapon(0, -4, 20));
+    jugador1.setWeapon(new Weapon(0, -4, 80,color(255,0,255),1));
   }
   gameObjects.add(0, jugador1.shoot());
 }

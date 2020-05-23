@@ -1,12 +1,13 @@
 class Ship extends GameObject {
   
-  
+  float hitPoints;
   Weapon weapon;
   
-  Ship(float x, float y,float size) {
+  Ship(float x, float y,float size,float hitPoints) {
     this.x = x;
     this.y = y;
     this.objectSize = size;
+    this.hitPoints = hitPoints;
   }  
   void setWeapon(Weapon weapon){
     this.weapon=weapon;
