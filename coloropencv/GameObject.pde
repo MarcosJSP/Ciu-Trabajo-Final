@@ -1,6 +1,6 @@
 abstract class GameObject {
   
-  float x,y,dx,dy,vx,vy;
+  float x,y,vx,vy;
   
   GameObject() {
   }
@@ -8,10 +8,15 @@ abstract class GameObject {
   void show(){ 
   }
   
-  void setPosition(){
-  }  
+  void setPosition(float x,float y){
+  }
   
-  void movement(int vx, int vy){
+  float[] getPostion(){
+    float [] result= {this.x,this.y};
+    return result;
+  }
+  
+  void movement(float vx, float vy){
     this.vx = vx;
     this.vy = vy;
   }

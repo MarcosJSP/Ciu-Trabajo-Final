@@ -10,7 +10,8 @@ int status;
 Controller a;
 Capture cam;
 
-NaveJugador jugador1;
+PlayerShip jugador1;
+EnemyShip enemigo1;
 Bullet bala1;
 
 ArrayList<GameObject> gameObjects;
@@ -21,13 +22,11 @@ void setup(){
   //cam = new Capture(this, width/2, height);
   //a= new Controller(cam);
   gameObjects = new ArrayList<GameObject>();
-  jugador1 = new NaveJugador(50,50);
-  bala1 = new Bullet(50,20,10);
-  gameObjects.add(bala1);
-  gameObjects.add(jugador1);
+  setupObjects();
 }
 
 void draw(){
+  
   if (status == 0) {
     a.drawController();
   } else if (status == 1) {
@@ -36,7 +35,16 @@ void draw(){
       while (i >=0 ) {
         GameObject obj = gameObjects.get(i);  
         obj.show();
-        if (obj.hasDied()) gameObjects.remove(i);
+        if (i == gameObjects.size()-1) {
+          obj.setPosition(mouseX,mouseY);
+        }
+        
+        if (obj.getPostion()[1] >height+40 || obj.getPostion()[1]<-40 || obj.getPostion()[0] <-40 ||obj.getPostion()[0]>width+40){
+          enemigo1.movement(-5,0);
+        }
+        
+        if (obj.hasDied() ||obj.getPostion()[1] >height+40 || obj.getPostion()[1]<-40 || obj.getPostion()[0] <-40 ||obj.getPostion()[0]>width+40) gameObjects.remove(i);
+        //println(gameObjects.size());
         i--;
       }
     
@@ -50,10 +58,42 @@ void draw(){
 }
 
 
-void mouseDragged(){
-  //a.mouseD();
+void setupObjects() {
+  jugador1 = new PlayerShip(50,50);
+  enemigo1 = new EnemyShip(500,100);
+  enemigo1.movement(5,0);
+  
+  
+  gameObjects.add(enemigo1);
+  
+  gameObjects.add(jugador1);
+  
 }
 
+//void mouseDragged(){
+//  a.mouseD();
+//  if(mouseButton==LEFT){
+//    jugador1.setWeapon(new Weapon(5,0,-8));
+    
+//  }else{
+//    jugador1.setWeapon(new Weapon(20,0,-4));
+    
+//  }
+  
+//  gameObjects.add(0,jugador1.shoot());
+  
+//}
+
 void mousePressed() {
-  //a.mouseP();  
+  //a.mouseP();
+  if(mouseButton==LEFT){
+    jugador1.setWeapon(new Weapon(5,0,-8));
+    
+  }else{
+    jugador1.setWeapon(new Weapon(20,0,-4));
+    
+  }
+  gameObjects.add(0,jugador1.shoot());
+  
+  
 }
