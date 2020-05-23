@@ -5,8 +5,7 @@ class Ship extends GameObject {
   Ship(float x, float y) {
     this.x = x;
     this.y = y;
-    this.dx = 0;
-    this.dy = 5;
+     
   }  
   void setWeapon(Weapon weapon){
     this.weapon=weapon;
@@ -15,7 +14,7 @@ class Ship extends GameObject {
     fill(255);
     //x = x + vx;
     //y = y + vy;
-    rect(x,y,dy,dy);
+    rect(x,y,2,5);
   }
   
   Bullet shoot(){

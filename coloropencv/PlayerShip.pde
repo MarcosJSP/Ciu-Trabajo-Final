@@ -9,7 +9,6 @@ class PlayerShip extends Ship {
     this.x = x;
     this.y = y;
   }
-  
-  
+   
   
 }
