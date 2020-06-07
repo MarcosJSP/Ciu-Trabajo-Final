@@ -1,16 +1,24 @@
 class Bullet extends GameObject {
    
-  float bulletSize;
-  
-  Bullet (float x, float y, float size) {
+  float bulletSize,damage;
+  color colour;
+    
+  Bullet (float x, float y, float size,color colour,float damage) {
     
     this.x = x;
     this.y = y;
     this.bulletSize = size;
+    this.colour = colour;
+    this.damage = damage;
   }
   
+  float getSize () {
+    return this.bulletSize;
+  }
+  
+  
   void show () {
-    fill (255,0,0);
+    fill (this.colour);
     
     x = x + vx;
     y = y + vy;
@@ -18,5 +26,7 @@ class Bullet extends GameObject {
     
   }
   
+  
+ 
 
 }
