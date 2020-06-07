@@ -14,18 +14,21 @@ CDController cdController;
 
 int value;
 int count;
+int posX;
+int posY;
 Capture cam;
 
 PlayerShip jugador1;
 EnemyShip enemigo1;
 Bullet bala1;
 
+
 ArrayList<GameObject> gameObjects;
 
 void setup() {
   size(1280, 720, P3D);
-  status = 0;
-  cam = new Capture(this, 1280/2, 480);
+  status = 2;
+  cam = new Capture(this, 1280, 720);
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
@@ -35,6 +38,8 @@ void setup() {
   setupObjects();
   count = 0;
   value = 5;
+  posX=width/2;
+  posY= height/2;
 }
 
 void draw() {
@@ -45,16 +50,23 @@ void draw() {
   } else if (status == 1) {
     drawIngameScreen();
   } else if (status == 2) {
-    int i = gameObjects.size()-1;    
-    while (i >=0 ) {
-
+    int i = gameObjects.size()-1;
+    //image(cdController.getFilteredImage(),0,0);
+    println(cdController.getRecognizedRect());
+    while (i >=0) {
+      
 
       GameObject obj = gameObjects.get(i);  
       obj.show();
       
       // seccion de tratamiento de la nave del jugador
       if (obj instanceof PlayerShip) {
-        obj.setPosition(mouseX, mouseY);
+        Rect posRect=cdController.getRecognizedRect();
+        if(posRect!= null){
+          posX=posRect.x;
+          posY=posRect.y;
+        }
+        obj.setPosition(posX, posY);
       }
 
       // seccion de tratamiento de los enemigos
@@ -120,6 +132,16 @@ void drawIngameScreen(){
   }
   pop();
   calibrator.draw();
+}
+
+void keyPressed(){
+  if (key=='1'){
+    status=0;
+  }else if( key == '2'){
+    status=1;
+  }else if(key=='3'){
+    status=2;
+  }
 }
 
 void mouseDragged() {
