@@ -16,7 +16,10 @@ int value;
 int count;
 int posX;
 int posY;
+int y;
+int y2;
 Capture cam;
+PImage back;
 
 PlayerShip jugador1;
 EnemyShip enemigo1;
@@ -32,12 +35,14 @@ void setup() {
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-
+  back=loadImage("./Assets/background.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   gameObjects = new ArrayList<GameObject>();
   setupObjects();
   count = 0;
   value = 5;
+  y=0;
+  y2=0;
   posX=width/2;
   posY= height/2;
 }
@@ -50,6 +55,17 @@ void draw() {
   } else if (status == 1) {
     drawIngameScreen();
   } else if (status == 2) {
+    
+    if(y>=height){
+      y=0;
+    }else{
+      y=y+20;
+    }
+    
+    y2=y-back.height;
+    //y = constrain(y, 0, back.height - height);
+    image(back, 0, y);
+    image(back, 0, y2);
     int i = gameObjects.size()-1;
     //image(cdController.getFilteredImage(),0,0);
     println(cdController.getRecognizedRect());
@@ -66,7 +82,7 @@ void draw() {
           posX=posRect.x;
           posY=posRect.y;
         }
-        obj.setPosition(posX, posY);
+        obj.setPosition(mouseX, mouseY);
       }
 
       // seccion de tratamiento de los enemigos
@@ -153,7 +169,7 @@ void mouseDragged() {
 
 void setupObjects() {
   jugador1 = new PlayerShip(50, 50, 20,1);
-  enemigo1 = new EnemyShip(width/2, height/16, 50,1);
+  enemigo1 = new EnemyShip(width/2, height/16, 50,10);
   enemigo1.setWeapon(new Weapon(0, 3, 20,color(255,0,0),1));
   enemigo1.movement(5, 0);
 
