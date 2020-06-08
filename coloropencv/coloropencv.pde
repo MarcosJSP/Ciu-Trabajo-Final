@@ -38,7 +38,7 @@ void setup() {
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-  back=loadImage("./Assets/Background.png");
+  back=loadImage("./Assets/InGameBackground.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   sceneDrawer = new SceneDrawer();
   gameObjects = new ArrayList<GameObject>();
