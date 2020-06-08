@@ -18,13 +18,19 @@ class PlayerShip extends Ship {
     x = x + vx;
     y = y + vy;
     
-    rect(x, y, this.asset.width,this.asset.height);
+    //rect(x, y, this.objectSize,this.objectSize);
     image(this.asset,x,y);
   }
    
    boolean hasDied(){
      if (hitPoints <=0) return true;
      return false;
+  }
+  
+  @Override
+  Bullet shoot(){
+    if(weapon==null)return null;
+    return weapon.shoot(this.x+30,this.y+5);
   }
   
 }

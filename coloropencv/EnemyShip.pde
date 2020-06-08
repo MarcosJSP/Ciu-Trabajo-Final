@@ -10,7 +10,7 @@ class EnemyShip extends Ship {
     x = x + vx;
     y = y + vy;
     image(this.asset,x-115,y-5);
-    rect(x, y, this.objectSize, this.objectSize);
+    //rect(x, y, this.objectSize, this.objectSize);
   }
   
   boolean hasDied(){
