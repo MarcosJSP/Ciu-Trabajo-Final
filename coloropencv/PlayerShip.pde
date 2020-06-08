@@ -2,6 +2,7 @@ class PlayerShip extends Ship {
   
   PlayerShip(float x, float y,float size,float hitPoints) {
     super(x,y,size,hitPoints);
+    this.playerObject=true;
   }  
   
   @Override   
