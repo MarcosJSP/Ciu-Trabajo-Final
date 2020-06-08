@@ -1,24 +1,21 @@
 class PlayerShip extends Ship {
   
-  PlayerShip(float x, float y,float size,float hitPoints) {
-    super(x,y,size,hitPoints);
+  PlayerShip(float x, float y, float vel, float acc, float angle, float size,float hitPoints) {
+    super(x, y, vel, acc, angle, size,hitPoints);
   }  
-  
-  @Override   
-  void setPosition(float x,float y) {
-    this.x = x;
-    this.y = y;
-  }
   
   @Override
   void show() {
     fill(255,255,255);
-    x = x + vx;
-    y = y + vy;
-    rect(x, y, this.objectSize, this.objectSize);
+    this.movement();
+    rect(locationV.x, locationV.y, this.objectSize, this.objectSize);
   }
-   
-   boolean hasDied(){
+  
+  @Override
+  void movement(){
+  }
+  
+  boolean hasDied(){
      if (hitPoints <=0) return true;
      return false;
   }

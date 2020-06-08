@@ -1,6 +1,7 @@
 import processing.video.*;
 import java.lang.*;
 import cvimage.*;
+import java.util.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.*;
 import java.awt.Color;
@@ -87,18 +88,17 @@ void draw() {
 
       // seccion de tratamiento de los enemigos
       if (obj instanceof EnemyShip) {
-        if (obj.getPostion()[0] - obj.getSize()/2 <= 0 ||obj.getPostion()[0] + obj.getSize()/2 >= width) {
-          value = - value;
-          obj.movement(value, 0);
+        if (obj.getPosition()[0] - obj.getSize()/2 <= 0 ||obj.getPosition()[0] + obj.getSize()/2 >= width) {
+          obj.angle = (obj.angle+180);
         }
         
-        if (count == 10 ) gameObjects.add(0, obj.shoot());
+        if (count == 10 ) obj.shoot();
       }
 
       
       // seccion de colisiones
 
-      if (obj.hasDied() ||obj.getPostion()[1] >height+40 || obj.getPostion()[1]<-40 || obj.getPostion()[0] <-40 ||obj.getPostion()[0]>width+40) gameObjects.remove(i);
+      if (obj.hasDied() ||obj.getPosition()[1] >height+40 || obj.getPosition()[1]<-40 || obj.getPosition()[0] <-40 ||obj.getPosition()[0]>width+40) gameObjects.remove(i);
       //println(gameObjects.size());
       i--;
     }
@@ -168,14 +168,12 @@ void mouseDragged() {
 }
 
 void setupObjects() {
-  jugador1 = new PlayerShip(50, 50, 20,1);
-  enemigo1 = new EnemyShip(width/2, height/16, 50,10);
-  enemigo1.setWeapon(new Weapon(0, 3, 20,color(255,0,0),1));
-  enemigo1.movement(5, 0);
-
+  jugador1 = new PlayerShip(50, 50, 5.0, 0.0,270.0, 20,1);
+  enemigo1 = new EnemyShip(width/2, height/16, 5.0, 0.0, 0.0, 50,10);
+  enemigo1.setWeapon("normal", 1, 90.0, 10, color(255,0,0));
+  //enemigo1.movement();
 
   gameObjects.add(enemigo1);
-
   gameObjects.add(jugador1);
 }
 
@@ -186,11 +184,10 @@ void mousePressed() {
     calibrator.mousePressed();
   }else if (status == 2){
     if (mouseButton==LEFT) {
-      jugador1.setWeapon(new Weapon(0, -8, 20,color(0,0,255),1));
+      jugador1.setWeapon("triple", 1, 270.0, 10, color(0,255,0));
     } else {
-      jugador1.setWeapon(new Weapon(0, -4, 80,color(255,0,255),1));
+      jugador1.setWeapon("circle", 1, 270.0, 5, color(255,0,255));
     }
-    gameObjects.add(0, jugador1.shoot());
   }
-  
+  jugador1.shoot();
 }

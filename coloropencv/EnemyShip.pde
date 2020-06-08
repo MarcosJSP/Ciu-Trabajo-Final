@@ -1,15 +1,14 @@
 class EnemyShip extends Ship {
 
-  EnemyShip(float x, float y,float size,float hitPoints) {
-    super(x, y,size,hitPoints);
+  EnemyShip(float x, float y, float vel, float acc, float angle, float size,float hitPoints) {
+    super(x, y, vel, acc, angle, size, hitPoints);
   }  
 
   @Override
   void show() {
     fill(255,0,0);
-    x = x + vx;
-    y = y + vy;
-    rect(x, y, this.objectSize, this.objectSize);
+    this.movement();
+    rect(locationV.x,locationV.y,this.objectSize, this.objectSize);
   }
   
   boolean hasDied(){
@@ -17,5 +16,4 @@ class EnemyShip extends Ship {
      return false;
   }
 
-  
 }
