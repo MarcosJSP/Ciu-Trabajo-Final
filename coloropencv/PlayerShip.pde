@@ -1,7 +1,8 @@
 class PlayerShip extends Ship {
   
-  PlayerShip(float x, float y,float size,float hitPoints) {
-    super(x,y,size,hitPoints);
+  
+  PlayerShip(float x, float y,float size,float hitPoints,PImage imagen) {
+    super(x,y,size,hitPoints,imagen);
     this.playerObject=true;
   }  
   
@@ -16,7 +17,9 @@ class PlayerShip extends Ship {
     fill(255,255,255);
     x = x + vx;
     y = y + vy;
-    rect(x, y, this.objectSize, this.objectSize);
+    
+    rect(x, y, this.asset.width,this.asset.height);
+    image(this.asset,x,y);
   }
    
    boolean hasDied(){
