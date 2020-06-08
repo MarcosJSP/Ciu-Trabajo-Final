@@ -1,6 +1,7 @@
 class Bullet extends GameObject {
    
   float bulletSize,damage;
+  boolean died=false;
   color colour;
     
   Bullet (float x, float y, float size,color colour,float damage) {
@@ -16,6 +17,10 @@ class Bullet extends GameObject {
     return this.bulletSize;
   }
   
+  float getDamage(){
+    return this.damage;  
+  }
+  
   
   void show () {
     fill (this.colour);
@@ -24,6 +29,15 @@ class Bullet extends GameObject {
     y = y + vy;
     circle(x,y,bulletSize);
     
+  }
+  
+  void setDied(boolean die){
+    died=die;
+  }
+  
+  @Override
+  boolean hasDied(){
+    return died;
   }
   
   

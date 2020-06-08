@@ -1,7 +1,8 @@
 abstract class GameObject {
   
   float x,y,vx,vy,objectSize;
-  
+  boolean playerObject=false;
+  boolean bulletObject=false;
   GameObject() {
   }
 
@@ -24,6 +25,18 @@ abstract class GameObject {
     
     this.vx = vx;
     this.vy = vy;
+  }
+  
+  void setPlayerObject(boolean option){
+    playerObject=option;
+  }
+  
+  boolean getPlayerObject(){
+    return playerObject;
+  }
+  
+  boolean getBulletObject(){
+    return bulletObject;
   }
   
   Bullet shoot(){

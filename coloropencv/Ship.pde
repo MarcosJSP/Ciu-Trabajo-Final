@@ -23,6 +23,10 @@ class Ship extends GameObject {
     return this.objectSize;
   }
   
+  void reduceHitPoints(float damage){
+    this.hitPoints-=damage;
+  }
+  
   Bullet shoot(){
     if(weapon==null)return null;
     return weapon.shoot(this.x,this.y);

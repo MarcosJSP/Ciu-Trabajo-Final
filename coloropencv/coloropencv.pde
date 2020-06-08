@@ -94,6 +94,29 @@ void draw() {
         
         if (count == 10 ) gameObjects.add(0, obj.shoot());
       }
+      if(obj instanceof Bullet){
+        int j = gameObjects.size()-1;
+        
+        while(j>=0 && obj.playerObject){
+          GameObject obj2 = gameObjects.get(j);
+          if(!obj2.playerObject){
+            checkBullet(obj,obj2);
+          }
+          j--;
+        }
+      }
+      if(obj instanceof Bullet){
+        int j = gameObjects.size()-1;
+        
+        while(j>=0 && !obj.playerObject){
+          GameObject obj2 = gameObjects.get(j);
+          if(obj2.playerObject){
+            checkBullet(obj,obj2);
+          }
+          j--;
+        }
+      
+      }
 
       
       // seccion de colisiones
@@ -109,6 +132,28 @@ void draw() {
   }
   println("Frames: " + frameRate);
 }
+
+void checkBullet(GameObject obj, GameObject obj2){
+  float [] positionObj=obj.getPostion();
+          float obj2Size=obj2.getSize();
+          float objSize=obj.getSize();
+          //if(!obj2Player){
+          
+            if(obj2 instanceof Ship){
+              float [] positionObj2=obj2.getPostion();
+              if(((positionObj2[0]<=positionObj[0]+objSize && positionObj2[0]>=positionObj[0])
+              || (positionObj[0] <= positionObj2[0]+obj2Size && positionObj[0]>=positionObj2[0]))
+              &&
+               ((positionObj2[1]<=positionObj[1]+objSize && positionObj2[1]>=positionObj[1])
+              || (positionObj[1] <= positionObj2[1]+obj2Size && positionObj[1]>=positionObj2[1]))
+               ){
+               ((Ship) obj2).reduceHitPoints(((Bullet) obj).getDamage());
+               ((Bullet) obj).setDied(true);
+              }
+            }
+          //}
+}
+
 
 void drawDebugScreen() {
   PImage originalImg = cdController.getOriginalImage();
@@ -150,6 +195,8 @@ void drawIngameScreen(){
   calibrator.draw();
 }
 
+
+
 void keyPressed(){
   if (key=='1'){
     status=0;
@@ -168,7 +215,7 @@ void mouseDragged() {
 }
 
 void setupObjects() {
-  jugador1 = new PlayerShip(50, 50, 20,1);
+  jugador1 = new PlayerShip(50, 50, 20,100);
   enemigo1 = new EnemyShip(width/2, height/16, 50,10);
   enemigo1.setWeapon(new Weapon(0, 3, 20,color(255,0,0),1));
   enemigo1.movement(5, 0);
@@ -190,7 +237,9 @@ void mousePressed() {
     } else {
       jugador1.setWeapon(new Weapon(0, -4, 80,color(255,0,255),1));
     }
-    gameObjects.add(0, jugador1.shoot());
+    Bullet bullet=jugador1.shoot();
+    bullet.setPlayerObject(true);
+    gameObjects.add(0, bullet);
   }
   
 }
