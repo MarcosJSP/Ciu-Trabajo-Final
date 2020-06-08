@@ -1,14 +1,11 @@
 class InGameCDCalibrator extends CDCalibrator {
   ColorPicker cp;
   InGameCDCalibrator(){
-    cp = new ColorPicker(500,25);
+    cp = new ColorPicker();
   }
   
   void draw(){
-    push();
-    translate(width/2-cp.w/2, 9*height/10-cp.h/2);
     cp.draw();
-    pop();
   }
   
   void mouseDragged(){
