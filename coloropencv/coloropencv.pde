@@ -184,9 +184,9 @@ void mousePressed() {
     calibrator.mousePressed();
   }else if (status == 2){
     if (mouseButton==LEFT) {
-      jugador1.setWeapon("triple", 1, 270.0, 10, color(0,255,0));
+      jugador1.setWeapon("serpiente", 1, 270.0, 10, color(0,255,0));
     } else {
-      jugador1.setWeapon("circle", 1, 270.0, 5, color(255,0,255));
+      jugador1.setWeapon("muro", 1, 270.0, 10, color(255,0,255));
     }
   }
   jugador1.shoot();
