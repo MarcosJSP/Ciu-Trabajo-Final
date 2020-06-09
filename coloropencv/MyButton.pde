@@ -2,7 +2,7 @@ class MyButton{
     PImage defaultState, pressedState, currentState;
     float h, w;
     private PVector pos;
-    boolean isOverButton;
+    boolean isOverButton, locked;
 
     MyButton(PImage defaultState,PImage pressedState){
         this.defaultState = defaultState;
@@ -12,6 +12,7 @@ class MyButton{
         this.w = defaultState.width;
         this.pos = new PVector(0,0);
         isOverButton = false;
+        locked = false;
     }
 
     void draw(){
@@ -25,22 +26,34 @@ class MyButton{
             isOverButton=false;
         }
 
-        image(this.currentState,0,0);
+        if (locked){
+            image(this.pressedState,0,0);
+        }else{
+            image(this.defaultState,0,0);
+        }
+
+        
     }
 
     boolean mousePressed(){
         if(isOverButton){
-            this.currentState = pressedState;
+            locked = true;
+        }else{
+            locked = false;
         }
-        return isOverButton;
+        println(locked);
+        return locked;
     }
 
     boolean mouseReleased(){
-        if(!isOverButton){
-            this.currentState = defaultState;
+        println(locked);
+        if(isOverButton && locked){
+            locked = false;
+            return true;
+        }else{
+            locked = false;
+            return false;
         }
-        print("esta pressed? - " + isOverButton);
-        return isOverButton;
     }
 
 }

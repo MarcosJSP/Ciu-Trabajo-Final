@@ -38,7 +38,7 @@ void setup() {
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-  back=loadImage("./Assets/InGameBackground.png");
+  back=loadImage("./Assets/Background.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   sceneDrawer = new SceneDrawer();
   gameObjects = new ArrayList<GameObject>();
@@ -50,7 +50,7 @@ void setup() {
   posX=width/2;
   posY= height/2;
 
-  confirmButton = new MyButton(loadImage("./Assets/Confirm button.png"), loadImage("./Assets/Confirm button.png"));
+  confirmButton = new MyButton(loadImage("./Assets/Confirm button.png"), loadImage("./Assets/Confirm button-pressed.png"));
 }
 
 void draw() {
@@ -218,6 +218,6 @@ void mousePressed() {
 
 void mouseReleased(){
   if(status == 2){
-    confirmButton.mouseReleased();
+    confirmButton.mouseReleased(); //esto nos indica si se ha pulsado el boton
   }
 }
