@@ -1,16 +1,18 @@
 class Bullet extends GameObject {
    
-  float bulletSize,damage;
+  PImage asset;
+  float bulletSize,damage,type;
   boolean died=false;
-  color colour;
+  
     
-  Bullet (float x, float y, float size,color colour,float damage) {
+  Bullet (float x, float y, float size,float type,float damage,PImage asset) {
     
     this.x = x;
     this.y = y;
     this.bulletSize = size;
-    this.colour = colour;
+    this.type = type;
     this.damage = damage;
+    this.asset = asset;
   }
   
   float getSize () {
@@ -23,11 +25,17 @@ class Bullet extends GameObject {
   
   
   void show () {
-    fill (this.colour);
+    //fill (this.colour);
     
     x = x + vx;
     y = y + vy;
-    circle(x,y,bulletSize);
+    if (type == 1) { 
+      image(this.asset,x-20,y-20);
+      //circle(x,y,bulletSize);
+    } else {
+      circle(x,y,bulletSize);
+    }
+    
     
   }
   

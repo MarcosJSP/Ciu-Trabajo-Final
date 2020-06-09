@@ -1,7 +1,8 @@
 class PlayerShip extends Ship {
   
-  PlayerShip(float x, float y,float size,float hitPoints) {
-    super(x,y,size,hitPoints);
+  
+  PlayerShip(float x, float y,float size,float hitPoints,PImage imagen) {
+    super(x,y,size,hitPoints,imagen);
     this.playerObject=true;
   }  
   
@@ -16,12 +17,20 @@ class PlayerShip extends Ship {
     fill(255,255,255);
     x = x + vx;
     y = y + vy;
-    rect(x, y, this.objectSize, this.objectSize);
+    
+    //rect(x, y, this.objectSize,this.objectSize);
+    image(this.asset,x,y);
   }
    
    boolean hasDied(){
      if (hitPoints <=0) return true;
      return false;
+  }
+  
+  @Override
+  Bullet shoot(){
+    if(weapon==null)return null;
+    return weapon.shoot(this.x+30,this.y+5);
   }
   
 }

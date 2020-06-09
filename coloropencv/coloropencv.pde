@@ -23,6 +23,7 @@ int y;
 int y2;
 Capture cam;
 PImage back;
+PImage imagejugador1,imageEnemy1,bulletJugador1;
 
 PlayerShip jugador1;
 EnemyShip enemigo1;
@@ -72,6 +73,7 @@ void draw() {
     //y = constrain(y, 0, back.height - height);
     image(back, 0, y);
     image(back, 0, y2);
+    
     int i = gameObjects.size()-1;
     //image(cdController.getFilteredImage(),0,0);
     println(cdController.getRecognizedRect());
@@ -183,9 +185,13 @@ void mouseDragged() {
 }
 
 void setupObjects() {
-  jugador1 = new PlayerShip(50, 50, 20,100);
-  enemigo1 = new EnemyShip(width/2, height/16, 50,10);
-  enemigo1.setWeapon(new Weapon(0, 3, 20,color(255,0,0),1));
+  imagejugador1=loadImage("./Assets/SpaceShip.png");
+  imageEnemy1=loadImage("./Assets/Boss.png");
+  bulletJugador1=loadImage("./Assets/SpaceShipBullet.png");
+  image(bulletJugador1,10,10);
+  jugador1 = new PlayerShip(50, 50, imagejugador1.width ,10,imagejugador1);
+  enemigo1 = new EnemyShip(width/2, height/16, 50,10,imageEnemy1);
+  enemigo1.setWeapon(new Weapon(0, 3, 10,0,1,bulletJugador1));
   enemigo1.movement(5, 0);
 
 
@@ -205,9 +211,9 @@ void mousePressed() {
     confirmButton.mousePressed();
   }else if (status == 3){
     if (mouseButton==LEFT) {
-      jugador1.setWeapon(new Weapon(0, -8, 20,color(0,0,255),1));
+      jugador1.setWeapon(new Weapon(0, -8, 10,1,1,bulletJugador1));
     } else {
-      jugador1.setWeapon(new Weapon(0, -4, 80,color(255,0,255),1));
+      jugador1.setWeapon(new Weapon(0, -4, 10,1,1,bulletJugador1));
     }
     Bullet bullet=jugador1.shoot();
     bullet.setPlayerObject(true);

@@ -1,21 +1,22 @@
 class Weapon{
+  PImage bulletAsset;
+  float vx,vy,size,damage,type;
   
-  float vx,vy,size,damage;
-  color colour;
   
   
-  Weapon(int vx,int vy,int size,color colour,float damage){
+  Weapon(float vx,float vy,float size,float type,float damage,PImage bulletAsset){
   this.size=size;
   this.vx=vx;
   this.vy= vy;
-  this.colour = colour;
+  this.type = type;
   this.damage = damage;
+  this.bulletAsset = bulletAsset;
   }
   
   
   
   Bullet shoot(float x,float y){
-    Bullet bullet = new Bullet(x,y,this.size,this.colour,this.damage);
+    Bullet bullet = new Bullet(x,y,this.size,this.type,this.damage,this.bulletAsset);
     bullet.movement(vx,vy);
     return bullet;
   }
