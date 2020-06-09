@@ -13,7 +13,7 @@ InGameCDCalibrator ingameCDCalibrator;
 CDController cdController;
 
 SceneDrawer sceneDrawer;
-MyButton confirmButton;
+MyButton confirmButton, quitButton;
 
 int value;
 int count;
@@ -52,6 +52,7 @@ void setup() {
   posY= height/2;
 
   confirmButton = new MyButton(loadImage("./Assets/Confirm button.png"), loadImage("./Assets/Confirm button-pressed.png"));
+  quitButton = new MyButton(loadImage("./Assets/Quit button.png"), loadImage("./Assets/Quit button-pressed.png"));
 }
 
 void draw() {
@@ -60,7 +61,7 @@ void draw() {
   if (status == 1) {
     sceneDrawer.drawDebugScreen(cdController);
   } else if (status == 2) {
-    sceneDrawer.drawIngameScreen(cdController, confirmButton);
+    sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
   } else if (status == 3) {
     
     if(y>=height){
@@ -208,6 +209,7 @@ void mousePressed() {
   }else if(status == 2){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
+    quitButton.mousePressed();
     confirmButton.mousePressed();
   }else if (status == 3){
     if (mouseButton==LEFT) {
@@ -224,6 +226,7 @@ void mousePressed() {
 
 void mouseReleased(){
   if(status == 2){
+    quitButton.mouseReleased();
     confirmButton.mouseReleased(); //esto nos indica si se ha pulsado el boton
   }
 }

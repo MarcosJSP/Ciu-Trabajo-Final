@@ -32,12 +32,14 @@ class SceneDrawer{
     calibrator.draw();
   }
   
-  void drawIngameScreen(CDController cdc, MyButton confirmButton) {
+  void drawIngameScreen(CDController cdc, MyButton confirmButton, MyButton quitButton) {
     PImage originalImg = cdc.getOriginalImage();
     if(originalImg == null) return;
     Rect rect = cdc.getRecognizedRect();
     CDCalibrator calibrator = cdc.getCalibrator();
+
     push();
+
     translate(width/2-originalImg.width/2, height/2-originalImg.height/2);
     //paint cam
     image(originalImg, 0, 0);
@@ -73,13 +75,18 @@ class SceneDrawer{
     confirmButton.draw();
     pop();
 
-
     //paint modal color picker
     push();
     translate(30,modal.height - 45);
     calibrator.draw();
     pop();
 
+    pop();
+
+    //paint quit button
+    push();
+    translate(width-quitButton.w-45,quitButton.h);
+    quitButton.draw();
     pop();
   }
 
