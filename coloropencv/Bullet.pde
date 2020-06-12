@@ -1,50 +1,34 @@
 class Bullet extends GameObject {
    
-  float bulletSize,damage;
-  color colour;
-  String type;
-  float angle2;
-  float angleVariation = 5;
+  int damage;
+  color colour = color(random(0,255),random(0,255),random(0,255));
+  Bullet (PImage imagen, String type, float x, float y, PVector origV, float vel, float acc, float angle, int damage) {
+    super(imagen, type, x, y, vel, acc, angle);
+    this.damage = damage;
+    this.objectSize[0] = 5;
+    this.objectSize[1] = 5;
+    //Una bullet es siempre lanzado desde un objeto, por lo tanto este recibe su velocidad
+    //this.velocityV.add(PVector.fromAngle(this.angle).setMag(origV.mag()));
+    this.velocityV.setMag(this.velocityV.mag()+origV.mag());
+  }
   
-  Bullet (float x, float y, float vel, float acc, float angle, float size, color colour, float damage) {
-    super(x, y, vel, acc, angle);
-    this.bulletSize = size;
+  Bullet (String type, float x, float y, PVector origV, float vel, float acc, float angle, float size, color colour, int damage) {
+    super(null, type, x, y, vel, acc, angle);
+    this.objectSize[0] = size;
+    this.objectSize[1] = size;
     this.colour = colour;
     this.damage = damage;
+    this.velocityV.setMag(this.velocityV.mag()+origV.mag());
   }
   
-  Bullet (String type, float x, float y, float vel, float acc, float angle, float size, color colour, float damage) {
-    super(x, y, vel, acc, angle);
-    this.bulletSize = size;
-    this.colour = colour;
-    this.damage = damage;
-    this.angle2 = angle;
-    this.type = type;
-
+  float[] getSize () {
+    return this.objectSize;
   }
   
-  float getSize () {
-    return this.bulletSize;
-  }
-  
-  
-  void show () {
+  @Override
+  void alternativeShow(){
     fill (this.colour);
-    if(type != null){
-      this.movementEffects(); 
-    }
-    this.movement();
-    circle(locationV.x, locationV.y, bulletSize);
+    circle(locationV.x, locationV.y, objectSize[0]);
   }
   
-  void movementEffects(){
-    switch(type){
-      case "serpiente":
-        this.angle += angleVariation;
-        if((this.angle > this.angle2+45) || (this.angle < this.angle2-45)){
-          this.angleVariation *= -1;
-        }
-        break;
-    }
-  }
 }

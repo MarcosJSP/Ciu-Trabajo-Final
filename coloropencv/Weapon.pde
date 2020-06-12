@@ -1,57 +1,149 @@
 class Weapon{
   
-  float size, damage, angle;
+  ArrayList <Bullet> balas;
+  float size, angle;
+  int damage;
   PVector location = new PVector();
+  PVector offset; 
   color colour;
   String type = "normal";
+  PImage balaI;
+  float [] shipSize;
   
-  Weapon(String type, PVector loc, float angle, int size, color colour, float damage){
+  Weapon(PImage asset, String type, float angle, int size, float[] shipSize, color colour, int damage){
     this.size=size;
-    this.location = loc.copy();
     this.angle = angle;
     this.colour = colour;
     this.damage = damage;
     this.type = type;
+    this.balaI = asset;
+    this.shipSize = shipSize;
+    this.offset = PVector.fromAngle(radians(this.angle));
+    this.offset.setMag(shipSize[1]);
+    
+    this.balas = new ArrayList<Bullet>();
   }
   
   void movement(PVector loc){
     this.location = loc.copy();
+    this.location.add(offset);
   }
   
-  void shoot(){
-    ArrayList <Bullet> balas = new ArrayList<Bullet>();
+  void shoot(PVector shipV){
     int nBullets;
-    switch(this.type){
-      case "normal":
-        balas.add(new Bullet(location.x,location.y, 5.0, 1.0, this.angle, this.size, this.colour, this.damage));
-        break;
-      case "triple":
-        balas.add(new Bullet(location.x,location.y, 5.0, 1.0, this.angle+20, this.size, this.colour, this.damage));
-        balas.add(new Bullet(location.x,location.y, 5.0, 1.0, this.angle, this.size, this.colour, this.damage));
-        balas.add(new Bullet(location.x,location.y, 5.0, 1.0, this.angle-20, this.size, this.colour, this.damage));
-        break;
-      case "circle":
-        nBullets = 16;
-        for(int i = 0; i<nBullets; i++){
-          balas.add(new Bullet(location.x,location.y, 5.0, 1.0, this.angle+i*(360/nBullets), this.size, this.colour, this.damage));
+    PVector a;
+      if(this.balaI == null){
+        switch(this.type){
+        case "normal":
+          balas.add(new Bullet(null, location.x,location.y, shipV, 5.0, 0.0, this.angle,  this.size, this.colour, this.damage));
+          break;
+        
+        case "triple":
+          balas.add(new Bullet(null, location.x,location.y, shipV, 5.0, 0.0, this.angle+20, this.size, this.colour, this.damage));
+          balas.add(new Bullet(null, location.x,location.y, shipV, 5.0, 0.0, this.angle, this.size, this.colour, this.damage));
+          balas.add(new Bullet(null, location.x,location.y, shipV, 5.0, 0.0, this.angle-20, this.size, this.colour, this.damage));
+          break;
+       
+        case "circle":
+          nBullets = 16;
+          for(int i = 0; i<nBullets; i++){
+            balas.add(new Bullet(null, location.x,location.y, shipV, 5.0, 0.0, this.angle+i*(360/nBullets), this.size, this.colour, this.damage));
+            
+          }
+          break;
+       
+       case "serpiente":
+          balas.add(new Bullet("serpiente",location.x, location.y, shipV, 5.0, 0.0, this.angle, this.size, this.colour, this.damage));
+          balas.get(balas.size()).setangleVariation(10);
+          break;
+          
+       case "muro":
+          nBullets = 8;
+          for(int i = -nBullets/2; i<nBullets/2; i++){
+            balas.add(new Bullet(null, location.x + i*this.size*3 ,location.y, shipV, 5.0, 0.0, this.angle, this.size, this.colour, this.damage));
+          }
+      }
+    }else{
+      switch(this.type){
+        case "normal":
+          balas.add(new Bullet(balaI,null, location.x,location.y , shipV, 5.0, 0, this.angle, this.damage));
+          break;
+          
+        case "triple":
+          balas.add(new Bullet(balaI, null, location.x,location.y, shipV, 5.0, 0.0, this.angle+20, this.damage));
+          balas.add(new Bullet(balaI, null, location.x,location.y, shipV, 5.0, 0.0, this.angle, this.damage));
+          balas.add(new Bullet(balaI, null, location.x,location.y, shipV, 5.0, 0.0, this.angle-20, this.damage));
+          break;
+         
+        case "limon":
+          nBullets = 36;
+          a = this.location.copy().sub(offset);
+          for(int i = 0; i<nBullets; i++){
+            //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
+            PVector aOffset = PVector.fromAngle(radians(360-(i*360/nBullets)));
+            aOffset.setMag(offset.mag());
+            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 5.0, 1.0, this.angle + i*360/nBullets, this.damage));
+          }
+          break;  
+          
+        case "circulo":
+          nBullets = 16;
+          a = this.location.copy().sub(offset);
+          for(int i = 0; i<nBullets; i++){
+            //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
+            PVector aOffset = PVector.fromAngle(radians((i* (360/nBullets))+90));
+            aOffset.setMag(offset.mag()/2);
+            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 1.0, 0.0, this.angle + i*(360/nBullets), this.damage));
+          }
+          break;
+          
+        case "circuloInvertido1":
+          nBullets = 36;
+          a = this.location.copy().sub(offset);
+          for(int i = 0; i<nBullets; i++){
+            //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
+            PVector aOffset = PVector.fromAngle(radians(90+(i*360/nBullets)));
+            aOffset.setMag(offset.mag());
+            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 5.0, 1.0, this.angle + i*360/nBullets, this.damage));
+          }
+          break;
+          
+        case "circuloInvertido2":
+          nBullets = 36;
+          a = this.location.copy().sub(offset);
+          for(int i = 0; i<nBullets; i++){
+            //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
+            PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
+            aOffset.setMag(offset.mag());
+            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 5.0, 1.0, this.angle + i*360/nBullets, this.damage));
         }
-        break;
-     case "serpiente":
-        balas.add(new Bullet("serpiente",location.x,location.y, 5.0, 1.0, this.angle, this.size, this.colour, this.damage));
-        break;
-     case "muro":
-        nBullets = 8;
-        for(int i = -nBullets/2; i<nBullets/2; i++){
-          balas.add(new Bullet(location.x + i*this.size*3 ,location.y, 5.0, 1.0, this.angle, this.size, this.colour, this.damage));
-        }
+          break;
+          
+        case "serpiente":
+          balas.add(new Bullet(balaI, "serpiente", location.x,location.y, shipV, 10.0, 0.0, this.angle, this.damage));
+          break;
+          
+        case "rebote":
+          balas.add(new Bullet(balaI, "rebote", location.x,location.y, shipV, 5.0, 0.2, this.angle, this.damage));
+          break;
+          
+        case "muro":
+          nBullets = 8;
+          for(int i = -nBullets/2; i<nBullets/2; i++){
+            balas.add(new Bullet(balaI, null, location.x + i*this.size*3 ,location.y, shipV, 5.0, 1.0, this.angle, this.damage));  
+          }
+          break;
+        case "default":
+          println("Este modo no existe");
+          balas.add(new Bullet(balaI,null, location.x,location.y , shipV, 5.0, 0, this.angle, this.damage));
+          break;
+       }
     }
+    
     Iterator<Bullet> iter = balas.iterator();
-    
     while(iter.hasNext()){
-       gameObjects.add(0,iter.next()); 
+      Bullet bala = (Bullet) iter.next();
+      bala.setLifeTimer(100);
     }
-    
-    //Bullet bullet = new Bullet(location.x,location.y, 5.0, 1.0, this.angle, this.size, this.colour, this.damage);
-    //gameObjects.add(0, bullet);
   }
 }

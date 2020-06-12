@@ -1,29 +1,25 @@
 class Ship extends GameObject {
   
-  float hitPoints;
-  Weapon weapon;
+  int hitPoints;
+  int n = 0;
+  ArrayList<Weapon> weapons = new ArrayList<Weapon>();
   
-  Ship(float x, float y, float vel, float acc, float angle, float size, float hitPoints) {
-    super(x, y, vel, acc, angle);
+  Ship(PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints) {
+    super(imagen, type, x, y, vel, acc, angle);
     this.locationV.set(x,y);
-    this.locationV.y = y;
-    this.objectSize = size;
     this.hitPoints = hitPoints;
   }
-  
-  void setWeapon(String tipo, float damage, float angle, int size, color col){
-    this.weapon = new Weapon(tipo,PVector.add(this.locationV, new PVector(this.objectSize/2,this.objectSize/2)), angle, size, col, damage);
+
+  void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, col, damage)); //<>//
   } 
   
-  void show() {
-    fill(255);
-    //x = x + vx;
-    //y = y + vy;
-    rect(locationV.x, locationV.y, this.objectSize, this.objectSize);
-  }
-  
-  float getSize () {
-    return this.objectSize;
+  void changeWeapon(int n){
+    if (n < weapons.size()){
+      this.n = n;
+    }else{
+      println("Número de arma incorrecto");
+    }
   }
   
   @Override 
@@ -46,14 +42,64 @@ class Ship extends GameObject {
     
     locationV.add(velocityV);
     
-    if(weapon != null){
-      weapon.movement(this.locationV);
+    if(type != null){
+        this.movementEffects();
+      }
+      
+    //Realiza la automoricion
+    if(this.lifeTimer != -1){ 
+      if(this.lifeTimer == 0){
+        println("Se le acabo el tiempo de vida a:" + this);
+        this.die();
+      }else{
+        this.lifeTimer--;
+      }
+    }
+    
+    if(weapons != null){
+      for(Weapon weapon : weapons){
+        weapon.movement(this.locationV);
+      }
+    }
+  }
+  
+  @Override
+  void movementEffects(){
+    switch(type){
+      case "serpiente":
+        this.angle += this.angleVariation;
+        if((this.angle > this.angleR+45) || (this.angle < this.angleR-45)){
+          this.angleVariation *= -1;
+        }
+        break;
+        
+      case "rebote":
+        if(this.hasExited(-1)){
+          this.angle = this.angle+180;
+          this.imageRotation = this.imageRotation+180;
+          Iterator iter = this.weapons.iterator();
+          
+          while (iter.hasNext()){
+            Weapon weapon = (Weapon) iter.next();
+            weapon.angle = weapon.angle + 180;
+            weapon.offset.rotate(weapon.angle + 180);
+            weapon.offset = PVector.fromAngle(radians(this.angle));
+            weapon.offset.setMag(this.objectSize[1]);
+          }
+        }
+        break;
     }
   }
   
   void shoot(){
-    if(weapon!=null) weapon.shoot();
+    if(!weapons.isEmpty()) weapons.get(this.n).shoot(this.velocityV);
   }
     
-  
+  void sufferDamage(int damage){
+    this.hitPoints -= damage;
+    if(this.hitPoints <= 0){
+      this.die();
+      println("Oh Vaya, ha muerto por disparos:" + this);
+    }
+  }
 }

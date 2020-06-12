@@ -1,23 +1,22 @@
 class PlayerShip extends Ship {
   
-  PlayerShip(float x, float y, float vel, float acc, float angle, float size,float hitPoints) {
-    super(x, y, vel, acc, angle, size,hitPoints);
+  //Constructor sin imagen (necesitamos tamaño)
+  PlayerShip(float x, float y, float vel, float acc, float angle, float size,int hitPoints) {
+    super(null, null, x, y, vel, acc, angle,hitPoints);
+    this.objectSize[0] = size;
+    this.objectSize[1] = size;
   }  
   
-  @Override
-  void show() {
-    fill(255,255,255);
-    this.movement();
-    rect(locationV.x, locationV.y, this.objectSize, this.objectSize);
-  }
+  //Quiza quitas la vel, acc y angle y fijar los valores
+  //Constructor con imagen
+  PlayerShip(PImage imagen, float x, float y, float vel, float acc, float angle, int hitPoints) {
+    super(imagen, null, x, y, vel, acc, angle, hitPoints);
+  } 
   
   @Override
-  void movement(){
+  void die(){
+     if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
+     println("Oh vaya, has perdido");
+     //cambiar estado
   }
-  
-  boolean hasDied(){
-     if (hitPoints <=0) return true;
-     return false;
-  }
-  
 }

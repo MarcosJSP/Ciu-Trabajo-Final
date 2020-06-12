@@ -1,19 +1,14 @@
 class EnemyShip extends Ship {
 
-  EnemyShip(float x, float y, float vel, float acc, float angle, float size,float hitPoints) {
-    super(x, y, vel, acc, angle, size, hitPoints);
+   //Constructor sin imagen (necesitamos tamaño)
+  EnemyShip(String type, float x, float y, float vel, float acc, float angle, float size, int hitPoints) {
+    super(null, type, x, y, vel, acc, angle,hitPoints);
+    this.objectSize[0] = size;
+    this.objectSize[1] = size;
   }  
-
-  @Override
-  void show() {
-    fill(255,0,0);
-    this.movement();
-    rect(locationV.x,locationV.y,this.objectSize, this.objectSize);
-  }
   
-  boolean hasDied(){
-     if (hitPoints <=0) return true;
-     return false;
+  //Constructor con imagen
+  EnemyShip(PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints) {
+    super(imagen, type, x, y, vel, acc, angle, hitPoints);
   }
-
 }
