@@ -187,7 +187,7 @@ void mouseDragged() {
 
 void setupObjects() {
   imagejugador1=loadImage("./Assets/Space Ship.png");
-  imageEnemy1=loadImage("./Assets/Boss.png");
+  imageEnemy1=loadImage("./Assets/Boss Body.png");
   bulletJugador1=loadImage("./Assets/Space Ship Bullet.png");
   image(bulletJugador1,10,10);
   jugador1 = new PlayerShip(50, 50, imagejugador1.width ,10,imagejugador1);
