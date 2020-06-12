@@ -12,7 +12,7 @@ class InGameCDCalibrator extends CDCalibrator {
     cp.mouseDragged();
     color c = cp.getSelectedColor();
     int hue = int(map(hue(c), 0, 255, 0, 180));
-    lowerHue = hue - 5;
-    upperHue = hue + 5;
+    lowerHue = hue - hueError;
+    upperHue = hue + hueError;
   }
 }
