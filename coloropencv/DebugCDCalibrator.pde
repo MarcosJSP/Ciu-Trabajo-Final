@@ -38,8 +38,8 @@ class DebugCDCalibrator extends CDCalibrator {
     if (mouseButton == RIGHT) {
       color c = get(mouseX, mouseY);
       int hue = int(map(hue(c), 0, 255, 0, 180));
-      lowerHue = hue - 10;
-      upperHue = hue + 10;
+      lowerHue = hue - error;
+      upperHue = hue + error;
       sliders[0].setValue(lowerHue);
       sliders[1].setValue(upperHue);
     }

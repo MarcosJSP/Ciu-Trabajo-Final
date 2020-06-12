@@ -10,6 +10,9 @@ int status;
 DebugCDCalibrator debugCDCalibrator;
 InGameCDCalibrator ingameCDCalibrator;
 
+SceneDrawer sceneDrawer;
+MyButton quitButton, confirmButton;
+
 CDController cdController;
 int rotation = 0;
 int value;
@@ -32,7 +35,7 @@ void setup() {
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-  back=loadImage("./Assets/Background in Game.png");
+  back=loadImage("./Assets/Background.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   setupObjects();
   
@@ -41,6 +44,11 @@ void setup() {
   y2=0;
   posX=width/2;
   posY= height/2;
+
+
+  sceneDrawer = new SceneDrawer();
+  confirmButton = new MyButton(loadImage("./Assets/Confirm button.png"), loadImage("./Assets/Confirm button-pressed.png"));
+  quitButton = new MyButton(loadImage("./Assets/Quit button.png"), loadImage("./Assets/Quit button-pressed.png"));
 }
 
 void setupObjects() {
@@ -50,7 +58,7 @@ void setupObjects() {
   //PImage bossI=loadImage("./Assets/Boss Body.png");
   PImage bulletS=loadImage("./Assets/Space Ship Bullet.png");
   PImage bulletB=loadImage("./Assets/Boss small bullet.png");
-  PImage shipI1=loadImage("./Assets/enemyShip.png");
+  PImage shipI1=loadImage("./Assets/Boss left weapon.png");
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
@@ -81,11 +89,11 @@ void draw() {
   background(0);
   //println("Frames: " + frameRate);
   cdController.updateColorDetection();
-  if (status == 0) {
-    drawDebugScreen();
-  }else if (status == 1) {
-    drawIngameScreen();
+  if (status == 1) {
+    sceneDrawer.drawDebugScreen(cdController);
   }else if (status == 2) {
+    sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
+  }else if (status == 3) {
     
     if(y>=height){
       y=0;
@@ -183,72 +191,40 @@ void draw() {
       count++;
     }
   }
-}
 //println("Frames: " + frameRate);
-
-
-void drawDebugScreen() {
-  PImage originalImg = cdController.getOriginalImage();
-  PImage filteredImg = cdController.getFilteredImage();
-  Rect rect = cdController.getRecognizedRect();
-  CDCalibrator calibrator = cdController.getCalibrator();
-  push();
-  translate(0, height/2-originalImg.height/2);
-
-  //left
-  image(filteredImg, 0, 0);
-  translate(width/2, 0);
-
-  //right
-  image(originalImg, 0, 0);
-  if (rect!=null) {
-    noFill();
-    stroke(250, 0, 0);
-    rect(rect.x, rect.y, rect.width, rect.height);
-  }
-  pop();
-  calibrator.draw();
 }
 
-void drawIngameScreen(){
-  PImage img = cdController.getOriginalImage();
-  if(img == null) return;
-  CDCalibrator calibrator = cdController.getCalibrator();
-  Rect rect = cdController.getRecognizedRect();
-  push();
-  translate(width/2-img.width/2, height/2-img.height/2);
-  image(img, 0, 0);
-  if (rect!=null) {
-    noFill();
-    stroke(250, 0, 0);
-    rect(rect.x, rect.y, rect.width, rect.height);
-  }
-  pop();
-  calibrator.draw();
-}
 
 void keyPressed(){
   if (key=='1'){
-    status=0;
-  }else if( key == '2'){
     status=1;
-  }else if(key=='3'){
+  }else if( key == '2'){
     status=2;
+  }else if(key=='3'){
+    status=3;
   }
 }
 
 void mouseDragged() {
-  if (status == 0 || status == 1){
+  if(status == 1){
+    CDCalibrator calibrator = cdController.getCalibrator();
+    calibrator.mouseDragged();
+  }else if(status == 2){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mouseDragged();
   }
 }
 
 void mousePressed() {
-  if(status == 0 || status == 1){
+  if(status == 1){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
-  }else if (status == 2){
+  }else if(status == 2){
+    CDCalibrator calibrator = cdController.getCalibrator();
+    calibrator.mousePressed();
+    confirmButton.mousePressed();
+    quitButton.mousePressed();
+  }else if (status == 3){
     if (mouseButton==LEFT) {
       jugador1.changeWeapon(0);
     } else if(mouseButton==RIGHT){
@@ -256,4 +232,12 @@ void mousePressed() {
     }
   }
   jugador1.shoot();
+}
+
+void mouseReleased(){
+  if(status == 1){
+  }else if(status == 2){
+    confirmButton.mouseReleased();
+    quitButton.mouseReleased();
+  }
 }

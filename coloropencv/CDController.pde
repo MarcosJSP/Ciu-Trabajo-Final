@@ -64,7 +64,7 @@ class CDController {
     Imgproc.erode(hsvRange, hsvErode, element);
 
     //Dilatamos la imagen
-    int dilation_size = 25;
+    int dilation_size = 30;
     Mat hsvDilate =  new Mat();
     Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(dilation_size, dilation_size));
     Imgproc.dilate(hsvErode, hsvDilate, element1);
@@ -74,11 +74,31 @@ class CDController {
     Mat hsvContours = new Mat();
     Imgproc.findContours(hsvDilate, contours, hsvContours, 1, 1);
     if (contours.size() > 0) {
-      Rect rect = Imgproc.boundingRect(contours.get(contours.size()-1));
-      //println(rect.toString());
-      Imgproc.rectangle(hsvDilate, rect, new Scalar(255, 0, 255), 5);
+
+
+      Rect lastRect = getRecognizedRect();
+      if(lastRect==null){
+          Rect rect = Imgproc.boundingRect(contours.get(contours.size()-1));
+          setRecognizedRect(rect);
+          Imgproc.rectangle(hsvDilate, rect, new Scalar(255, 0, 255), 5);
+        }else{
+          for(int i=0; i < contours.size();i++){
+              Rect rect = Imgproc.boundingRect(contours.get(contours.size()-1- i));
+              int error = 10;
+              rect.x -= error; rect.y -= error;
+              rect.width += error; rect.height += error;
+              
+              if(checkOverlap(lastRect, rect)) {
+                setRecognizedRect(rect);
+                Imgproc.rectangle(hsvDilate, rect, new Scalar(255, 0, 255), 5);
+                break;
+              }else if(i+1 >= contours.size()){
+                setRecognizedRect(null);
+              }
+          }
+      }
       contours.clear();
-      setRecognizedRect(rect);
+      
     } else {
       setRecognizedRect(null);
     }
@@ -132,6 +152,11 @@ class CDController {
       cdCalibrator != null
       && lastCamFrame != null
       && img != null;
+  }
+  
+  boolean checkOverlap(Rect a, Rect b){
+    return a.x < b.x + b.width &&  a.x+a.width > b.x &&
+            a.y < b.y + b.height  && b.y < a.y + a.height;
   }
 
 }

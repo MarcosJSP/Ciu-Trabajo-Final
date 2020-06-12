@@ -5,6 +5,7 @@ class CDCalibrator{
   float upperSat = 130;
   float lowerVal = 80;
   float upperVal = 255;
+  float error = 5;
   
   CDCalibrator(){
   }
