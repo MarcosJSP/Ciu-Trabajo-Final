@@ -86,36 +86,36 @@ class Weapon{
           }
           break;  
           
-        case "circulo":
+        case "circuloInvertido1":
           nBullets = 16;
           a = this.location.copy().sub(offset);
           for(int i = 0; i<nBullets; i++){
             //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
-            PVector aOffset = PVector.fromAngle(radians((i* (360/nBullets))+90));
+            PVector aOffset = PVector.fromAngle(radians((i* (360/nBullets))));
             aOffset.setMag(offset.mag()/2);
             balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 1.0, 0.0, this.angle + i*(360/nBullets), this.damage));
           }
           break;
           
-        case "circuloInvertido1":
-          nBullets = 36;
+        case "circuloInvertido2":
+          nBullets = 16;
           a = this.location.copy().sub(offset);
           for(int i = 0; i<nBullets; i++){
             //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
             PVector aOffset = PVector.fromAngle(radians(90+(i*360/nBullets)));
             aOffset.setMag(offset.mag());
-            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 5.0, 1.0, this.angle + i*360/nBullets, this.damage));
+            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 1.0, 0.0, this.angle + i*360/nBullets, this.damage));
           }
           break;
           
-        case "circuloInvertido2":
-          nBullets = 36;
+        case "circulo":
+          nBullets = 16;
           a = this.location.copy().sub(offset);
           for(int i = 0; i<nBullets; i++){
             //PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
-            PVector aOffset = PVector.fromAngle(radians(i*360/nBullets));
-            aOffset.setMag(offset.mag());
-            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 5.0, 1.0, this.angle + i*360/nBullets, this.damage));
+            PVector aOffset = PVector.fromAngle(radians((i*360/nBullets)-90));
+            aOffset.setMag(offset.mag()/2.0);
+            balas.add(new Bullet(balaI, null, PVector.add(a,aOffset).x, PVector.add(a,aOffset).y, shipV, 1.0, 0.0, this.angle + i*360/nBullets, this.damage));
         }
           break;
           
@@ -144,6 +144,7 @@ class Weapon{
     while(iter.hasNext()){
       Bullet bala = (Bullet) iter.next();
       bala.setLifeTimer(100);
+      bala.setBulletList(this.balas);
     }
   }
 }

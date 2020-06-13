@@ -1,6 +1,6 @@
 class Bullet extends GameObject {
-   
   int damage;
+  ArrayList <Bullet> bulletList = new ArrayList <Bullet>();
   color colour = color(random(0,255),random(0,255),random(0,255));
   Bullet (PImage imagen, String type, float x, float y, PVector origV, float vel, float acc, float angle, int damage) {
     super(imagen, type, x, y, vel, acc, angle);
@@ -25,10 +25,19 @@ class Bullet extends GameObject {
     return this.objectSize;
   }
   
+  void setBulletList(ArrayList <Bullet> a){
+     this.bulletList = a;
+  }
+  
   @Override
   void alternativeShow(){
     fill (this.colour);
     circle(locationV.x, locationV.y, objectSize[0]);
   }
   
+  @Override
+  void die(){
+    if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
+    if(this.bulletList.contains(this)) this.bulletList.remove(this);
+  }
 }

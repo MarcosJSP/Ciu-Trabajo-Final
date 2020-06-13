@@ -60,19 +60,19 @@ void setupObjects() {
   jugador1.sethitBox(true);
   
   EnemyShip enemigo2 = new EnemyShip(shipI1, "rebote", width/2 + 50, 0, 5.0, 0.1, GameObject.bot, 100);
-  EnemyShip enemigo3 = new EnemyShip(shipI1, "serpiente", 0+30, height-30, 5.0, 2.0, GameObject.right-45, 100);
+  EnemyShip enemigo3 = new EnemyShip(shipI1, "rebote", 0 + 30, height/2, 5.0, 2.0, GameObject.right, 100);
   enemigo3.sethitBox(true);
   EnemyShip enemigo4 = new EnemyShip(shipI1, "rebote", width/2 - 50, height-50, 10.0, 0.0, GameObject.top, 100);
   enemigo4.sethitBox(true);
   //armas
   //enemigo1.setWeapon(bulletB, "normal", 1, 90.0, 10, color(255,0,0));
   enemigo2.setWeapon(bulletB, "normal", 1, enemigo2.getAngle(), 10, color(255,0,0));
-  enemigo3.setWeapon(bulletB, "circuloInvertido2", 1, enemigo3.getAngle(), 10, color(255,0,0));
+  enemigo3.setWeapon(bulletB, "normal", 1, enemigo3.getAngle(), 10, color(255,0,0));
   enemigo4.setWeapon(bulletB, "normal",1, enemigo4.getAngle(), 10, color(255,0,0));
   
-  jugador1.setWeapon(bulletS, "circulo", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(255,0,255));
-  jugador1.setangleVariation(10);
+  jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
+  jugador1.setWeapon(bulletS, "normal", 1, 0.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "normal", 1, 180.0, 10, color(255,0,255));
   
   enemigo2.die();
 }
@@ -103,11 +103,8 @@ void draw() {
     //Control de los objetos
     for (int i = 0; i < GameObject.listaObjetos.size(); i++){
       GameObject obj = GameObject.listaObjetos.get(i) ;
-      
-      
       // Seccion de tratamiento de la nave del jugador
-      
-      if (obj instanceof Ship){
+      if (obj instanceof EnemyShip){
         Ship objES = (Ship) obj;
         if (count == 10) objES.shoot(); 
       }
@@ -122,7 +119,7 @@ void draw() {
         obj.setPosition(mouseX, mouseY);
         if (this.frameCount%15 == 0){
           obj.setimageRotation(rotation);
-          rotation = (rotation + 15)%360;
+          //rotation = (rotation + 15)%360;
         }
         
         //Colisiones (solo con las balas de otras naves)
@@ -136,7 +133,8 @@ void draw() {
               for(int l = 0; l < eW.balas.size(); l++){
                 Bullet bala = eW.balas.get(l);
                 if(bala.hasCollisioned(pS)){
-                  pS.sufferDamage(bala.damage);
+                  pS.sufferDamage(1);
+                  println();
                   bala.die();
                 }
               }
@@ -157,9 +155,9 @@ void draw() {
               for(int l = 0; l < pW.balas.size(); l++){
                 Bullet bala = pW.balas.get(l);
                 if(bala.hasCollisioned(eS)){
-                  eS.sufferDamage(bala.damage);
-                  println("vida: " + eS.hitPoints);
+                  eS.sufferDamage(1);
                   bala.die();
+                  println("vida: " + eS.hitPoints);
                 }
               }
             }
@@ -244,16 +242,19 @@ void mouseDragged() {
   }
 }
 
+int i = 0;
 void mousePressed() {
   if(status == 0 || status == 1){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
   }else if (status == 2){
     if (mouseButton==LEFT) {
-      jugador1.changeWeapon(0);
+      jugador1.shoot();
+      Weapon actualWeapon = (Weapon) jugador1.weapons.get(i);
+      println("Estas usando el arma :" + actualWeapon.type);
     } else if(mouseButton==RIGHT){
-      jugador1.changeWeapon(1);
+      i = (i+1)%jugador1.weapons.size();
+      jugador1.changeWeapon(i);
     }
   }
-  jugador1.shoot();
 }

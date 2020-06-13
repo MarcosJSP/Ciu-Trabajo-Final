@@ -151,7 +151,7 @@ public class GameObject extends GameObjectUniverse{
     //Realiza la automoricion
     if(this.lifeTimer != -1){ 
       if(this.lifeTimer == 0){
-        println("Se le acabo el tiempo de vida a:" + this);
+        //println("Se le acabo el tiempo de vida a:" + this);
         this.die();
       }else{
         this.lifeTimer--;
@@ -185,29 +185,29 @@ public class GameObject extends GameObjectUniverse{
  
  void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
-     println("Oh vaya, ha muerto: " + this);
+     //println("Oh vaya, ha muerto: " + this);
   }
   
   boolean hasCollisioned(GameObject b){
     
-    float axright = this.locationV.x + this.hitBox.getWidth();
-    float axleft  = this.locationV.x - this.hitBox.getWidth();
-    float aytop = this.locationV.y - this.hitBox.getHeight();
-    float aybot = this.locationV.y + this.hitBox.getHeight();
+    float aRight = this.locationV.x + this.hitBox.getWidth();
+    float aLeft  = this.locationV.x - this.hitBox.getWidth();
+    float aBot = this.locationV.y - this.hitBox.getHeight();
+    float aTop = this.locationV.y + this.hitBox.getHeight();
     
-    float bxright = b.locationV.x + b.hitBox.getWidth();
-    float bxleft  = b.locationV.x - b.hitBox.getWidth();
-    float bytop = b.locationV.y - b.hitBox.getHeight();
-    float bybot = b.locationV.y + b.hitBox.getHeight();
+    float bRight = b.locationV.x + b.hitBox.getWidth();
+    float bLeft  = b.locationV.x - b.hitBox.getWidth();
+    float bBot = b.locationV.y - b.hitBox.getHeight();
+    float bTop = b.locationV.y + b.hitBox.getHeight();
     
-    if(aytop   > bybot  && aytop   < bytop   &&
-       axright > bxleft && axright < bxright ||
-       aybot   > bybot  && aybot   < bytop   && 
-       axright > bxleft && axright < bxright ||
-       aytop   > bybot  && aytop   < bytop   && 
-       axleft  > bxleft && axleft  < bxright ||
-       aybot   > bybot  && aybot   < bytop   && 
-       axleft  > bxleft && axleft  < bxright)
+    if(((aTop   > bBot  && aTop   < bTop   )&&
+        (aRight > bLeft && aRight < bRight))||
+       ((aBot   > bBot  && aBot   < bTop   )&& 
+        (aRight > bLeft && aRight < bRight))||
+       ((aTop   > bBot  && aTop   < bTop   )&& 
+        (aLeft  > bLeft && aLeft  < bRight))||
+       ((aBot   > bBot  && aBot   < bTop   )&& 
+        (aLeft  > bLeft && aLeft  < bRight)))
     {
       return true;
     }else{
