@@ -1,0 +1,13 @@
+-- Cambios en el comit --
+:::::: Commits 14/06/22020 ::::::
+Weapon:
+-> Weapons es un creador de balas únicamente y ya no contiene una lista de todas las balas que ha creado.
+
+Bullet:
+-> A las balas se les pasa una referencia de la nave que las ha disparado.
+--> Con esta referencia se arreglan las colisiones de las balas que no se contemplaban
+    cuando la nave que las disparaba había sido destruida.
+
+ColorOpenCV (main):
+-> la comprobación de quien es el dueño de la bala no se realiza mediante el arrayList
+  de balas del objetoWeapon sino mediante la referencia pasada a cada bala

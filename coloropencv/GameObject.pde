@@ -33,24 +33,31 @@ public class GameObject extends GameObjectUniverse{
     this.type = type;
     this.asset = imagen;
     
-    this.objectSize[0] = imagen.width;
-    this.objectSize[1] = imagen.height;
+    if (asset == null){
+      this.objectSize[0] = 10;
+      this.objectSize[0] = 10;
+    }else{
+      this.objectSize[0] = imagen.width;
+      this.objectSize[1] = imagen.height;
+    }
+    
     this.angleR = angle;
     this.locationR = locationV.copy();
     
     this.imageRotation = angle+90;
     velocityV = PVector.fromAngle(radians(angle));
     velocityV.setMag(velocity);
-    
     GameObject.listaObjetos.add(this);
-    this.hitBox = new hitBox(imagen.width,imagen.height);
+    this.hitBox = new hitBox(this.objectSize[0], this.objectSize[1]);
     this.hitBox.rotateHitBox(imageRotation);
   }
   
   void show(){
     if(this.asset == null){
+      //Si el GameObject no tiene imagen se dibuja una alternativa en su lugar
       alternativeShow();
     }else{
+      
       pushMatrix();
       imageMode(CENTER);
       translate(locationV.x, locationV.y);
@@ -58,8 +65,10 @@ public class GameObject extends GameObjectUniverse{
       image(this.asset,0, 0);
       imageMode(CORNER);
       popMatrix();
-      //dibujamoshitbox
-      if(hitBox_flag){
+    }
+    
+    //dibujamoshitbox
+    if(hitBox_flag){
         pushMatrix();
         translate(locationV.x, locationV.y);
         float [] a;
@@ -75,7 +84,6 @@ public class GameObject extends GameObjectUniverse{
         line(a[0],a[1],b[0],b[1]);
         popMatrix();
       }
-    }
   }
   
   void alternativeShow(){
@@ -185,7 +193,7 @@ public class GameObject extends GameObjectUniverse{
  
  void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
-     //println("Oh vaya, ha muerto: " + this);
+     println("Oh vaya, ha muerto: " + this);
   }
   
   boolean hasCollisioned(GameObject b){

@@ -54,15 +54,15 @@ void setupObjects() {
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
-  jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, 270.0, 100);
+  jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, 270.0, 50);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
   //enemigo1.imageRotation = 270.0;
   jugador1.sethitBox(true);
   
-  EnemyShip enemigo2 = new EnemyShip(shipI1, "rebote", width/2 + 50, 0, 5.0, 0.1, GameObject.bot, 100);
-  EnemyShip enemigo3 = new EnemyShip(shipI1, "rebote", 0 + 30, height/2, 5.0, 2.0, GameObject.right, 100);
+  EnemyShip enemigo2 = new EnemyShip(shipI1, "rebote", width/2 + 50, 0, 5.0, 0.1, GameObject.bot, 50);
+  EnemyShip enemigo3 = new EnemyShip(shipI1, "rebote", 0 + 30, height/2, 5.0, 2.0, GameObject.right, 50);
   enemigo3.sethitBox(true);
-  EnemyShip enemigo4 = new EnemyShip(shipI1, "rebote", width/2 - 50, height-50, 10.0, 0.0, GameObject.top, 100);
+  EnemyShip enemigo4 = new EnemyShip(shipI1, "rebote", width/2 - 50, height-50, 10.0, 0.0, GameObject.top, 50);
   enemigo4.sethitBox(true);
   //armas
   //enemigo1.setWeapon(bulletB, "normal", 1, 90.0, 10, color(255,0,0));
@@ -70,11 +70,10 @@ void setupObjects() {
   enemigo3.setWeapon(bulletB, "normal", 1, enemigo3.getAngle(), 10, color(255,0,0));
   enemigo4.setWeapon(bulletB, "normal",1, enemigo4.getAngle(), 10, color(255,0,0));
   
-  jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "normal", 1, 0.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "normal", 1, 180.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "limon", 1, 270.0, 10, color(0,255,0));
+  jugador1.setWeapon(bulletS, "circuloInvertido2", 1, 270.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "circuloInvertido", 1, 180.0, 10, color(255,0,255));
   
-  enemigo2.die();
 }
 
 void draw() {
@@ -86,7 +85,7 @@ void draw() {
   }else if (status == 1) {
     drawIngameScreen();
   }else if (status == 2) {
-    
+
     if(y>=height){
       y=0;
     }else{
@@ -102,8 +101,9 @@ void draw() {
     
     //Control de los objetos
     for (int i = 0; i < GameObject.listaObjetos.size(); i++){
-      GameObject obj = GameObject.listaObjetos.get(i) ;
+      GameObject obj = GameObject.listaObjetos.get(i);
       // Seccion de tratamiento de la nave del jugador
+
       if (obj instanceof EnemyShip){
         Ship objES = (Ship) obj;
         if (count == 10) objES.shoot(); 
@@ -121,55 +121,38 @@ void draw() {
           obj.setimageRotation(rotation);
           //rotation = (rotation + 15)%360;
         }
-        
-        //Colisiones (solo con las balas de otras naves)
-        for (int j = 0; j < GameObject.listaObjetos.size(); j++){
-          GameObject objj = GameObject.listaObjetos.get(j);
-          PlayerShip pS = (PlayerShip) obj;
-          if(objj instanceof EnemyShip){
-            EnemyShip eS = (EnemyShip) objj;
-            for (int k = 0; k < eS.weapons.size(); k++){
-              Weapon eW = eS.weapons.get(k);
-              for(int l = 0; l < eW.balas.size(); l++){
-                Bullet bala = eW.balas.get(l);
-                if(bala.hasCollisioned(pS)){
-                  pS.sufferDamage(1);
-                  println();
-                  bala.die();
-                }
-              }
-            }
-          }
-        }
       }
       
-      if (obj instanceof EnemyShip){
-        //Colisiones (solo con las balas de otras naves)
-        for (int j = 0; j < GameObject.listaObjetos.size(); j++){
-          GameObject objj = GameObject.listaObjetos.get(j);
-          EnemyShip eS = (EnemyShip) obj;
-          if(objj instanceof PlayerShip){
-            PlayerShip pS = (PlayerShip) objj;
-            for (int k = 0; k < pS.weapons.size(); k++){
-              Weapon pW = pS.weapons.get(k);
-              for(int l = 0; l < pW.balas.size(); l++){
-                Bullet bala = pW.balas.get(l);
-                if(bala.hasCollisioned(eS)){
-                  eS.sufferDamage(1);
-                  bala.die();
-                  println("vida: " + eS.hitPoints);
-                }
-              }
-            }
-          }
+      if (obj instanceof Bullet){
+        Bullet objB = (Bullet) obj;
+        if (objB.myShip instanceof PlayerShip){ 
+           for (int j = 0; j < GameObject.listaObjetos.size(); j++){
+             GameObject objO = GameObject.listaObjetos.get(j);
+             if (!(objO instanceof PlayerShip)&& (objO instanceof Ship) && objB.hasCollisioned(objO)){
+               Ship objS = (Ship) objO;
+               objS.sufferDamage(objB.getDamage());
+               objB.die();
+             }
+                 
+           }
+        }else if(objB.myShip instanceof EnemyShip){
+          for (int j = 0; j < GameObject.listaObjetos.size(); j++){
+             GameObject objO = GameObject.listaObjetos.get(j);
+             if (!(objO instanceof EnemyShip) && (objO instanceof Ship) && objB.hasCollisioned(objO)){
+               Ship objS = (Ship) objO;
+               objS.sufferDamage(objB.getDamage());
+               objB.die();
+             }
+           }
         }
-      }  
-      
+      }
+
       // seccion de colisiones
       // exterior
       if (obj.hasExited(100)){
         obj.die(); 
       }
+      
       obj.movement();
       obj.show();
       
@@ -179,8 +162,8 @@ void draw() {
       }
       
       count++;
-    }
-  }
+      }
+   }
 }
 //println("Frames: " + frameRate);
 

@@ -17,6 +17,15 @@ class PlayerShip extends Ship {
   void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
      println("Oh vaya, has perdido");
+     this.weapons = null;
      //cambiar estado
+  }
+  
+  @Override
+  void alternativeShow(){
+    fill(color(0,255,0));
+    triangle(-this.objectSize[0]/2.0, -this.objectSize[1]/2.0, 
+              this.objectSize[0]/2.0,  this.objectSize[1]/2.0, 
+              this.objectSize[0]/2.0, -this.objectSize[1]/2.0); 
   }
 }
