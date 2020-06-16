@@ -10,8 +10,13 @@ class Ship extends GameObject {
     this.hitPoints = hitPoints;
   }
 
+  void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, float freqShoot, color col){
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>//
+  } 
+  
+  //Constructor alternativo sin freq de disparo
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this)); //<>// //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>//
   } 
   
   void changeWeapon(int n){
@@ -95,19 +100,24 @@ class Ship extends GameObject {
     if(weapons != null) weapons.get(this.n).shoot(this.velocityV);
   }
     
+    
+  Weapon getWeapon(){
+    return weapons.get(this.n);
+  }
+  
+  boolean hasWeapon(){
+    if (this.weapons.size() == 0){
+      return false; 
+    }else{
+      return true;
+    }
+  }
   void sufferDamage(int damage){
     this.hitPoints -= damage;
     if(this.hitPoints <= 0){
       this.die();
       println("Oh Vaya, ha muerto por disparos:" + this);
     }
-  }
-  
-  
-  @Override
-  void die(){
-    if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
-    this.weapons = null;
   }
   
   @Override

@@ -1,5 +1,56 @@
+
+static class synchronizedGameObjectList {
+  ArrayList <GameObject> lista;
+  synchronizedGameObjectList(){
+    this.lista = new  ArrayList <GameObject>();
+  }
+  
+  synchronizedGameObjectList copy(){
+    synchronized(lista){
+      synchronizedGameObjectList result = new synchronizedGameObjectList();
+      result.lista = new ArrayList <GameObject> (this.lista);
+      return result;
+    }
+  }
+  
+  GameObject get(int i){
+    synchronized(lista){
+      return this.lista.get(i);
+    }
+  }
+  
+  void add(GameObject o){
+    synchronized(lista){
+      this.lista.add(o);
+    }
+  }
+  
+  void remove(GameObject o){
+    synchronized(lista){
+      this.lista.remove(o);
+    }
+  }
+  
+  boolean contains(GameObject o){
+    synchronized(lista){
+      return this.lista.contains(o);
+    }
+  }
+  
+  int size(){
+    synchronized(lista){
+      return this.lista.size();
+    }
+  }
+  
+  Iterator iterator(){
+    synchronized(lista){
+     return this.lista.iterator(); 
+    }
+  }
+}
 static abstract class GameObjectUniverse {
-  static final ArrayList <GameObject> listaObjetos = new ArrayList<GameObject>();
+  static final synchronizedGameObjectList listaObjetos = new synchronizedGameObjectList();
   static final float top = 270.0 ;
   static final float bot = 90.0;
   static final float right = 0.0;
@@ -47,9 +98,12 @@ public class GameObject extends GameObjectUniverse{
     this.imageRotation = angle+90;
     velocityV = PVector.fromAngle(radians(angle));
     velocityV.setMag(velocity);
-    GameObject.listaObjetos.add(this);
     this.hitBox = new hitBox(this.objectSize[0], this.objectSize[1]);
     this.hitBox.rotateHitBox(imageRotation);
+    
+    synchronized (GameObject.listaObjetos){
+      GameObject.listaObjetos.add(this);
+    }
   }
   
   void show(){
@@ -57,7 +111,6 @@ public class GameObject extends GameObjectUniverse{
       //Si el GameObject no tiene imagen se dibuja una alternativa en su lugar
       alternativeShow();
     }else{
-      
       pushMatrix();
       imageMode(CENTER);
       translate(locationV.x, locationV.y);
@@ -191,9 +244,9 @@ public class GameObject extends GameObjectUniverse{
   }
  
  
- void die(){
+  void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
-     println("Oh vaya, ha muerto: " + this);
+     //println("He muerto");
   }
   
   boolean hasCollisioned(GameObject b){

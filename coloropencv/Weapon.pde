@@ -10,8 +10,27 @@ class Weapon{
   String type = "normal";
   PImage balaI;
   float [] shipSize;
+  float frequencyShoot = 0;
+  float internalTimer = 0;
   
-  Weapon(PImage asset, String type, float angle, int size, float[] shipSize, int damage, Ship myShip){
+  Weapon(PImage asset, String type, float angle, int size, float[] shipSize, int damage, float seconds, Ship myShip){
+    this.size=size;
+    this.angle = angle;
+    //this.colour = colour;
+    this.damage = damage;
+    this.type = type;
+    this.balaI = asset;
+    this.shipSize = shipSize;
+    this.offset = PVector.fromAngle(radians(this.angle));
+    this.offset.setMag(shipSize[1]);
+    
+    this.myShip = myShip;
+    //this.balas = new ArrayList<Bullet>();
+    this.frequencyShoot = seconds;
+  }
+  
+  //Constructor alternativo sin frequencia de disparo
+  Weapon(PImage asset, String type, float angle, int size, float[] shipSize, int damage,  Ship myShip){
     this.size=size;
     this.angle = angle;
     //this.colour = colour;
@@ -29,6 +48,10 @@ class Weapon{
   void movement(PVector loc){
     this.location = loc.copy();
     this.location.add(offset);
+  }
+  
+  void setFrequencyShoot(float a){
+    this.frequencyShoot = a;
   }
   
   void shoot(PVector shipV){

@@ -14,6 +14,7 @@ class Bullet extends GameObject {
     //this.velocityV.add(PVector.fromAngle(this.angle).setMag(origV.mag()));
     this.velocityV.setMag(this.velocityV.mag()+origV.mag());
     this.myShip = myShip;
+    this.hitBox_flag = hitBoxBullets;
   }
   /*
   Bullet (String type, float x, float y, PVector origV, float vel, float acc, float angle, float size, color colour, int damage) {
@@ -47,11 +48,5 @@ class Bullet extends GameObject {
     }
     //
     circle(locationV.x, locationV.y, objectSize[0]);
-  }
-  
-  @Override
-  void die(){
-    if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
-    //if(this.bulletList.contains(this)) this.bulletList.remove(this);
   }
 }

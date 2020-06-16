@@ -20,4 +20,22 @@ class EnemyShip extends Ship {
               this.objectSize[0]/2.0,  this.objectSize[1]/2.0, 
               this.objectSize[0]/2.0, -this.objectSize[1]/2.0); 
   }
+
+  @Override
+  EnemyShip copy(){
+    EnemyShip copia = new EnemyShip(this.asset, this.type, this.locationV.x, this.locationV.y, this.velocity, this.acceleration, this.angle, this.hitPoints);
+    copia.velocityLimit = this.velocityLimit;
+    return copia;    
+  }
+  
+  //Devolvemos un array de copias
+  @Override
+  EnemyShip[] multyCopy(int n){
+    EnemyShip[] multy = new EnemyShip[n];
+    for(int i= 0; i<n; i++){
+       multy[i] = new EnemyShip(this.asset, this.type, this.locationV.x, this.locationV.y, this.velocity, this.acceleration, this.angle, this.hitPoints);
+    }
+    return multy;
+  }
+  
 }
