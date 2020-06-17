@@ -20,7 +20,7 @@ DebugCDCalibrator debugCDCalibrator;
 InGameCDCalibrator ingameCDCalibrator;
 
 SceneDrawer sceneDrawer;
-MyButton quitButton, confirmButton;
+MyButton quitButton, confirmButton, playAgainButton, quitButton2;
 
 CDController cdController;
 int rotation = 0;
@@ -54,10 +54,13 @@ void setup() {
   posX=width/2;
   posY= height/2;
 
-
   sceneDrawer = new SceneDrawer();
   confirmButton = new MyButton(loadImage("./Assets/Images/Confirm button.png"), loadImage("./Assets/Images/Confirm button-pressed.png"));
   quitButton = new MyButton(loadImage("./Assets/Images/Quit button.png"), loadImage("./Assets/Images/Quit button-pressed.png"));
+  
+  playAgainButton = new MyButton(loadImage("./Assets/Images/Play again button.png"), loadImage("./Assets/Images/Play again button-pressed.png"));
+  quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
+
 }
 
 void setupObjects() {
@@ -199,7 +202,12 @@ void draw() {
       
       count++;
     }
+  }else if(scene == GameScenes.WIN){
+    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, true);
+  }else if(scene == GameScenes.LOSE){
+    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, false);
   }
+
 //println("Frames: " + frameRate);
 }
 
@@ -239,6 +247,9 @@ void mousePressed() {
     } else if(mouseButton==RIGHT){
       jugador1.changeWeapon(1);
     }
+  }else if (scene == GameScenes.WIN || scene == GameScenes.LOSE){
+    playAgainButton.mousePressed();
+    quitButton2.mousePressed();
   }
   jugador1.shoot();
 }
@@ -248,5 +259,8 @@ void mouseReleased(){
   }else if(scene == GameScenes.MAIN_MENU){
     confirmButton.mouseReleased();
     quitButton.mouseReleased();
+  }else if(scene == GameScenes.WIN || scene == GameScenes.LOSE){
+    playAgainButton.mouseReleased();
+    quitButton2.mouseReleased();
   }
 }

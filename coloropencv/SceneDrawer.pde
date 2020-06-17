@@ -1,10 +1,13 @@
 class SceneDrawer{
   
-  PImage modal;
-  PFont robotoRegular;
+  PImage modal, thiccckModal;
+  PFont robotoRegular, robotoBold;
+
   SceneDrawer (){
     robotoRegular=createFont("./Assets/Fonts/Roboto-Regular.ttf", 16);
+    robotoBold=createFont("Verdana Bold", 54);
     modal = loadImage("./Assets/Images/Card.png");
+    thiccckModal = loadImage("./Assets/Images/Thiccck card.png");
     // confirmButton = loadImage("./Assets/Confirm button.png");
   }
   
@@ -93,6 +96,50 @@ class SceneDrawer{
     translate(width-quitButton.w-45,quitButton.h);
     quitButton.draw();
     pop();
+  }
+
+  void gameEndScreen(CDController cdc, MyButton playAgainButton, MyButton quitButton, Boolean victory) {
+    PImage originalImg = cdc.getOriginalImage();
+    if(originalImg == null) return;
+    Rect rect = cdc.getRecognizedRect();
+    CDCalibrator calibrator = cdc.getCalibrator();
+
+    //paint modal
+    push();
+    translate(width/2, height/2);
+    translate(-thiccckModal.width/2, - thiccckModal.height/2);
+
+    //paint modal background
+    image(thiccckModal, 0,0);
+
+    push();
+    float tSize = 54;
+    textFont(robotoBold, tSize);
+    textSize(tSize);
+    if (victory){
+      fill(67,245,109);
+      text("Victoria", thiccckModal.width/2 - textWidth("Victoria")/2,thiccckModal.height/2-5);
+    }else{
+      fill(245,67,67);
+      text("Derrota", thiccckModal.width/2 - textWidth("Derrota")/2,thiccckModal.height/2-5);
+    }
+    pop();
+    
+    int midSeparation = 15;
+
+    push();
+    translate(thiccckModal.width/2 - playAgainButton.w - midSeparation, thiccckModal.height/2+quitButton.h);
+    quitButton.draw();
+    pop();
+
+    push();
+    translate(thiccckModal.width/2 + midSeparation, thiccckModal.height/2+playAgainButton.h);
+    playAgainButton.draw();
+    pop();
+
+
+    pop();
+
   }
 
 }
