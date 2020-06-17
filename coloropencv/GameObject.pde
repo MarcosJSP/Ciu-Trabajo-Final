@@ -237,7 +237,7 @@ public class GameObject extends GameObjectUniverse{
       case "rebote":
         if(this.hasExited(0)){
           this.angle = this.angle+180;
-          this.setimageRotation(this.imageRotation+180);
+          this.setimageRotation(this.imageRotation);
         }
         break;
     }
@@ -300,6 +300,10 @@ public class GameObject extends GameObjectUniverse{
   GameObject copy(){
     GameObject copia = new GameObject(this.asset, this.type, this.locationV.x, this.locationV.y, this.velocity, this.acceleration, this.angle);
     copia.velocityLimit = this.velocityLimit;
+    copia.setangleVariation(this.angleVariation);
+    copia.setLifeTimer(this.lifeTimer);
+    copia.sethitBox(this.hitBox_flag);
+    copia.setimageRotation(this.imageRotation);
     return copia;
   }
 
@@ -308,6 +312,10 @@ public class GameObject extends GameObjectUniverse{
     GameObject[] multy = new GameObject[n];
     for(int i= 0; i<n; i++){
        multy[i] = new GameObject(this.asset, this.type, this.locationV.x, this.locationV.y, this.velocity, this.acceleration, this.angle);
+       multy[i].setangleVariation(this.angleVariation);
+       multy[i].setimageRotation(this.imageRotation);
+       multy[i].setLifeTimer(this.lifeTimer);
+       multy[i].sethitBox(this.hitBox_flag);
     }
     return multy;
   }

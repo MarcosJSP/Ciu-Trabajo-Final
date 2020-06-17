@@ -34,7 +34,11 @@ class EnemyShip extends Ship {
     EnemyShip[] multy = new EnemyShip[n];
     for(int i= 0; i<n; i++){
        multy[i] = new EnemyShip(this.asset, this.type, this.locationV.x, this.locationV.y, this.velocity, this.acceleration, this.angle, this.hitPoints);
-    }
+       multy[i].setangleVariation(this.angleVariation);
+       multy[i].setimageRotation(this.imageRotation);
+       multy[i].setLifeTimer(this.lifeTimer);
+       multy[i].sethitBox(this.hitBox_flag);  
+  }
     return multy;
   }
 

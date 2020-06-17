@@ -40,7 +40,7 @@ void setup() {
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-  back=loadImage("./Assets/Background in Game.png");
+  back=loadImage("./Assets/Background.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   setupObjects();
 
@@ -65,9 +65,8 @@ void setupObjects() {
   //PImage bossI=loadImage("./Assets/Boss Body.png");
   PImage bulletS=loadImage("./Assets/Space Ship Bullet.png");
   PImage bulletB=loadImage("./Assets/Boss small bullet.png");
-  PImage shipI1=loadImage("./Assets/enemyShip.png");
-  shipI1.resize(50,50);
-  bulletB.resize(20,20);
+  PImage shipI1=loadImage("./Assets/Boss Body.png");
+  shipI1.resize(30,30);
   //naves
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50000);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
@@ -75,10 +74,12 @@ void setupObjects() {
   jugador1.sethitBox(true);
 
   EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
+  enemigoPrueba.setimageRotation(0.0);
   EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
   for (int i = 0; i < 20 ; i++){
     enemigosTest[i].movement(30,(30*i)+30);
     enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
+    
   }
 
   //armas
