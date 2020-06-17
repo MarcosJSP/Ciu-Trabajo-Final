@@ -29,7 +29,12 @@ class SceneDrawer{
       rect(rect.x, rect.y, rect.width, rect.height);
     }
     pop();
+
+    //paint modal color picker
+    push();
+    translate(width/2, 9*height/10);
     calibrator.draw();
+    pop();
   }
   
   void drawIngameScreen(CDController cdc, MyButton confirmButton, MyButton quitButton) {

@@ -58,7 +58,7 @@ void setupObjects() {
   //PImage bossI=loadImage("./Assets/Boss Body.png");
   PImage bulletS=loadImage("./Assets/Space Ship Bullet.png");
   PImage bulletB=loadImage("./Assets/Boss small bullet.png");
-  PImage shipI1=loadImage("./Assets/Boss left weapon.png");
+  PImage shipI1=loadImage("./Assets/Enemy - satellite.png");
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
