@@ -6,7 +6,16 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.core.*;
 import java.awt.Color;
 
-int status;
+public enum GameScenes {
+  DEBUG_MODE,
+  MAIN_MENU,
+  GAME,
+  WIN,
+  LOSE
+}
+
+GameScenes scene;
+
 DebugCDCalibrator debugCDCalibrator;
 InGameCDCalibrator ingameCDCalibrator;
 
@@ -30,12 +39,12 @@ Bullet bala1;
 
 void setup() {
   size(1280, 720, P3D);
-  status = 2;
+  scene = GameScenes.MAIN_MENU;
   cam = new Capture(this, 1280, 720);
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-  back=loadImage("./Assets/Background.png");
+  back=loadImage("./Assets/Images/Background.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   setupObjects();
   
@@ -47,18 +56,18 @@ void setup() {
 
 
   sceneDrawer = new SceneDrawer();
-  confirmButton = new MyButton(loadImage("./Assets/Confirm button.png"), loadImage("./Assets/Confirm button-pressed.png"));
-  quitButton = new MyButton(loadImage("./Assets/Quit button.png"), loadImage("./Assets/Quit button-pressed.png"));
+  confirmButton = new MyButton(loadImage("./Assets/Images/Confirm button.png"), loadImage("./Assets/Images/Confirm button-pressed.png"));
+  quitButton = new MyButton(loadImage("./Assets/Images/Quit button.png"), loadImage("./Assets/Images/Quit button-pressed.png"));
 }
 
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
-  PImage shipI=loadImage("./Assets/Space Ship.png");
+  PImage shipI=loadImage("./Assets/Images/Space Ship.png");
   //PImage bossI=loadImage("./Assets/Boss Body.png");
-  PImage bulletS=loadImage("./Assets/Space Ship Bullet.png");
-  PImage bulletB=loadImage("./Assets/Boss small bullet.png");
-  PImage shipI1=loadImage("./Assets/Enemy - satellite.png");
+  PImage bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
+  PImage bulletB=loadImage("./Assets/Images/Boss small bullet.png");
+  PImage shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
@@ -89,11 +98,11 @@ void draw() {
   background(0);
   //println("Frames: " + frameRate);
   cdController.updateColorDetection();
-  if (status == 1) {
+  if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
-  }else if (status == 2) {
+  }else if (scene == GameScenes.MAIN_MENU) {
     sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
-  }else if (status == 3) {
+  }else if (scene == GameScenes.GAME) {
     
     if(y>=height){
       y=0;
@@ -196,35 +205,35 @@ void draw() {
 
 
 void keyPressed(){
-  if (key=='1'){
-    status=1;
-  }else if( key == '2'){
-    status=2;
-  }else if(key=='3'){
-    status=3;
+  if (key == '1'){
+    scene = GameScenes.DEBUG_MODE;
+  }else if(key == '2'){
+    scene = GameScenes.MAIN_MENU;
+  }else if(key == '3'){
+    scene = GameScenes.GAME;
   }
 }
 
 void mouseDragged() {
-  if(status == 1){
+  if(scene == GameScenes.DEBUG_MODE){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mouseDragged();
-  }else if(status == 2){
+  }else if(scene == GameScenes.MAIN_MENU){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mouseDragged();
   }
 }
 
 void mousePressed() {
-  if(status == 1){
+  if(scene == GameScenes.DEBUG_MODE){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
-  }else if(status == 2){
+  }else if(scene == GameScenes.MAIN_MENU){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
     confirmButton.mousePressed();
     quitButton.mousePressed();
-  }else if (status == 3){
+  }else if (scene == GameScenes.GAME){
     if (mouseButton==LEFT) {
       jugador1.changeWeapon(0);
     } else if(mouseButton==RIGHT){
@@ -235,8 +244,8 @@ void mousePressed() {
 }
 
 void mouseReleased(){
-  if(status == 1){
-  }else if(status == 2){
+  if(scene == GameScenes.DEBUG_MODE){
+  }else if(scene == GameScenes.MAIN_MENU){
     confirmButton.mouseReleased();
     quitButton.mouseReleased();
   }

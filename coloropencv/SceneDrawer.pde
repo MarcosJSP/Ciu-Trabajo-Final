@@ -4,7 +4,7 @@ class SceneDrawer{
   PFont robotoRegular;
   SceneDrawer (){
     robotoRegular=createFont("./Assets/Fonts/Roboto-Regular.ttf", 16);
-    modal = loadImage("./Assets/Card.png");
+    modal = loadImage("./Assets/Images/Card.png");
     // confirmButton = loadImage("./Assets/Confirm button.png");
   }
   

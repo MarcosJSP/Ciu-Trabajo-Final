@@ -6,7 +6,7 @@ class ColorPicker{
   private int selectedColor;
   
   ColorPicker(){
-    this.colorBand = loadImage("./Assets/Color Picker.png");
+    this.colorBand = loadImage("./Assets/Images/Color Picker.png");
     this.w = colorBand.width;
     this.h = colorBand.height;
     // this.colorBand.resize(this.w, this.h);
