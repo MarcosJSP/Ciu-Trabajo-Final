@@ -56,6 +56,8 @@ void setup() {
   nThreads = Runtime.getRuntime().availableProcessors()+2;
   println("Numero de hilos: " + nThreads);
   executor = Executors.newFixedThreadPool(nThreads);
+  
+  frameRate(60);
 }
 
 void setupObjects() {
