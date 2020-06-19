@@ -32,7 +32,7 @@ int posY;
 int y;
 int y2;
 Capture cam;
-PImage back;
+PImage back, heartIcon;
 
 PlayerShip jugador1;
 EnemyShip enemigo1;
@@ -77,6 +77,7 @@ void setup() {
   playAgainButton = new MyButton(loadImage("./Assets/Images/Play again button.png"), loadImage("./Assets/Images/Play again button-pressed.png"));
   quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
 
+  heartIcon=loadImage("./Assets/Images/Heart.png");
 }
 
 void setupObjects() {
@@ -95,12 +96,12 @@ void setupObjects() {
   //enemigo1.imageRotation = 270.0;
   jugador1.sethitBox(true);
 
-  EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
+  EnemyShip enemigoPrueba = new EnemyShip(shipI1, "normal", 30, 30, 5.0, 0.1, GameObject.right, 50000);
   enemigoPrueba.setimageRotation(0.0);
   EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
-  for (int i = 0; i < 20 ; i++){
+  for (int i = 0; i < 1 ; i++){
     enemigosTest[i].movement(30,(30*i)+30);
-    enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
+    enemigosTest[i].setWeapon(bulletB, "normal", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
     
   }
 
@@ -122,42 +123,52 @@ void draw() {
   }else if (scene == GameScenes.MAIN_MENU) {
     sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
   }else if (scene == GameScenes.GAME) {
-    
-    if(y>=height){
-      y=0;
-    }else{
-      y=y+20;
-    }
-
-    y2=y-back.height;
-    //y = constrain(y, 0, back.height - height);
-    image(back, 0, y);
-    image(back, 0, y2);
-    //image(cdController.getFilteredImage(),0,0);
-    //println(cdController.getRecognizedRect());
-    //counter = GameObject.listaObjetos.size();
-    //Arrancamos los hilos
-    timer = millis() / 1000;
-    for(int i = 0; i< GameObject.listaObjetos.size(); i++){
-      GameObject o = GameObject.listaObjetos.get(i);
-      o.show();
-    }
-
-    synchronized (GameObject.listaObjetos){
-      counter = 0;
-      Iterator ite = GameObject.listaObjetos.iterator();
-      while (ite.hasNext()){
-        GameObject o = (GameObject) ite.next();
-        Runnable worker = new WorkerThread(o, counter);
-        executor.execute(worker);
-        counter ++;
-      }
-    }
+    drawGame();
   }else if(scene == GameScenes.WIN){
     sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, true);
   }else if(scene == GameScenes.LOSE){
     sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, false);
   }
+}
+
+void drawGame(){
+  if(y>=height){
+    y=0;
+  }else{
+    y=y+20;
+  }
+  
+  //Pintamos el fondo
+  y2=y-back.height;
+  image(back, 0, y);
+  image(back, 0, y2);
+
+  //Arrancamos los hilos
+  timer = millis() / 1000;
+  for(int i = 0; i< GameObject.listaObjetos.size(); i++){
+    GameObject o = GameObject.listaObjetos.get(i);
+    o.show();
+  }
+
+  synchronized (GameObject.listaObjetos){
+    counter = 0;
+    Iterator ite = GameObject.listaObjetos.iterator();
+    while (ite.hasNext()){
+      GameObject o = (GameObject) ite.next();
+      Runnable worker = new WorkerThread(o, counter);
+      executor.execute(worker);
+      counter ++;
+    }
+  }
+
+  //Pintamos vidas
+  push();
+  translate(45,45);
+  for(int i = 0; i < 3; i++){
+    if(i!=0)translate(heartIcon.width + 15,0);
+    image(heartIcon, 0,0);
+  }
+  pop();
 }
 
 synchronized void subCounter(){
