@@ -97,8 +97,8 @@ void setupObjects() {
 
   EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
   enemigoPrueba.setimageRotation(0.0);
-  EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
-  for (int i = 0; i < 20 ; i++){
+  EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(5);
+  for (int i = 0; i < 5 ; i++){
     enemigosTest[i].movement(30,(30*i)+30);
     enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
     
@@ -115,7 +115,7 @@ void setupObjects() {
 
 void draw() {
   background(0);
-  println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
+  //println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   cdController.updateColorDetection();
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
@@ -133,6 +133,7 @@ void draw() {
     //y = constrain(y, 0, back.height - height);
     image(back, 0, y);
     image(back, 0, y2);
+    
     //image(cdController.getFilteredImage(),0,0);
     //println(cdController.getRecognizedRect());
     //counter = GameObject.listaObjetos.size();
@@ -145,10 +146,15 @@ void draw() {
 
     synchronized (GameObject.listaObjetos){
       counter = 0;
+  
+      PImage imagen = cdController.getOriginalImage();
+      Runnable worker = new WorkerThread(imagen, counter);
+      executor.execute(worker);
+      counter++;
       Iterator ite = GameObject.listaObjetos.iterator();
       while (ite.hasNext()){
         GameObject o = (GameObject) ite.next();
-        Runnable worker = new WorkerThread(o, counter);
+        worker = new WorkerThread(o, counter);
         executor.execute(worker);
         counter ++;
       }
@@ -170,7 +176,18 @@ public class WorkerThread implements Runnable {
   String name;
   Thread t;
   int i ;
+  PImage image;
   GameObject object;
+  
+  public WorkerThread(PImage o, int i){
+    image = o;
+    this.i = i;
+    name = "hilo ->" + i;
+    //t = new Thread(this, name);
+    //t.start();
+    //System.out.println("New thread: " + name);
+  }
+  
   public WorkerThread(GameObject o, int i){
     object = o;
     this.i = i;
@@ -181,7 +198,16 @@ public class WorkerThread implements Runnable {
   }
 
   public void run(){
+    if (this.image instanceof PImage){
+       print("dwqdqwdwqdqw");
+       push();
+       tint(255, 30);  // very transparent
+       image(this.image,0,0);
+       pop();
+    } else {
       objectController(this.object);
+    }
+      
       //println(this.name + " esta trabajando");
   }
 }
@@ -206,7 +232,7 @@ void objectController(GameObject obj){
         posX=posRect.x;
         posY=posRect.y;
       }
-      obj.setPosition(mouseX, mouseY);
+      obj.setPosition(posX, posY);
       if (this.frameCount%15 == 0){
         obj.setimageRotation(rotation);
         //rotation = (rotation + 15)%360;
