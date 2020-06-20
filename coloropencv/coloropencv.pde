@@ -33,6 +33,7 @@ int y;
 int y2;
 Capture cam;
 PImage back;
+PImage hitPoints_image;
 
 PlayerShip jugador1;
 EnemyShip enemigo1;
@@ -76,6 +77,9 @@ void setup() {
   
   playAgainButton = new MyButton(loadImage("./Assets/Images/Play again button.png"), loadImage("./Assets/Images/Play again button-pressed.png"));
   quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
+  
+  // cargamos la vida 
+  hitPoints_image = loadImage("./Assets/Images/Heart.png");
 
 }
 
@@ -90,7 +94,7 @@ void setupObjects() {
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
-  jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50000);
+  jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 10);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
   //enemigo1.imageRotation = 270.0;
   jugador1.sethitBox(true);
@@ -133,6 +137,9 @@ void draw() {
     //y = constrain(y, 0, back.height - height);
     image(back, 0, y);
     image(back, 0, y2);
+    for(int i = 0; i < jugador1.hitPoints; i++) {
+        image(hitPoints_image, 50,50);
+    }
     //image(cdController.getFilteredImage(),0,0);
     //println(cdController.getRecognizedRect());
     //counter = GameObject.listaObjetos.size();
