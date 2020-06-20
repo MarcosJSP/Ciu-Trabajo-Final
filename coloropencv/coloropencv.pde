@@ -312,7 +312,12 @@ void mouseReleased(){
       exit();
     }
   }else if(scene == GameScenes.WIN || scene == GameScenes.LOSE){
-    playAgainButton.mouseReleased();
-    quitButton2.mouseReleased();
+    if (playAgainButton.mouseReleased()) {
+        scene = GameScenes.GAME;
+    }
+    if (quitButton2.mouseReleased()) {
+      exit();
+    }
+    
   }
 }
