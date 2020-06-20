@@ -108,7 +108,7 @@ void setupObjects() {
   EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
   for (int i = 0; i < 20 ; i++){
     enemigosTest[i].movement(30,(30*i)+30);
-    enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
+    enemigosTest[i].setWeapon(bulletB, "normal", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
     
   }
 
