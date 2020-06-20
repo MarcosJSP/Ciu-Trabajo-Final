@@ -6,7 +6,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.core.*;
 import java.awt.Color;
 import java.util.concurrent.*;
-
+import processing.sound.*;
 public enum GameScenes {
   DEBUG_MODE,
   MAIN_MENU,
@@ -33,7 +33,7 @@ int y;
 int y2;
 Capture cam;
 PImage back;
-
+SoundFile shootSound;
 PlayerShip jugador1;
 EnemyShip enemigo1;
 Bullet bala1;
@@ -53,6 +53,7 @@ void setup() {
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
   back=loadImage("./Assets/Images/Background.png");
+  shootSound=new SoundFile(this,"./Assets/Sounds/shot_1.wav");
   cdController = new CDController(cam, ingameCDCalibrator);
   setupObjects();
 
@@ -66,7 +67,7 @@ void setup() {
   println("Numero de procesadores: " + Runtime.getRuntime().availableProcessors());
   //El mejor número de hilos es un poco más que el número de procesadores
   nThreads = Runtime.getRuntime().availableProcessors()+2;
-  println("Numero de hilos: " + nThreads);
+  //println("Numero de hilos: " + nThreads);
   executor = Executors.newFixedThreadPool(nThreads);
 
   // Creamos la clase que usaremos para pintar por pantalla
@@ -78,6 +79,8 @@ void setup() {
   quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
 
 }
+
+
 
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
@@ -91,6 +94,7 @@ void setupObjects() {
   bulletB.resize(20,20);
   //naves
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50000);
+  jugador1.setShotSound(shootSound);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
   //enemigo1.imageRotation = 270.0;
   jugador1.sethitBox(true);
@@ -253,6 +257,11 @@ void objectController(GameObject obj){
       count = 0;
     }
 }
+
+void playSound(){
+    this.shootSound.play();
+}
+
 
 void keyPressed(){
   if (key == '1'){
