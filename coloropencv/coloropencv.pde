@@ -138,7 +138,7 @@ void draw() {
     image(back, 0, y);
     image(back, 0, y2);
     for(int i = 0; i < jugador1.hitPoints; i++) {
-        image(hitPoints_image, 50,50);
+        image(hitPoints_image, i*35,50);
     }
     //image(cdController.getFilteredImage(),0,0);
     //println(cdController.getRecognizedRect());
