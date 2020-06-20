@@ -279,11 +279,15 @@ void mousePressed() {
   if(scene == GameScenes.DEBUG_MODE){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
+    
+    
   }else if(scene == GameScenes.MAIN_MENU){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
     confirmButton.mousePressed();
     quitButton.mousePressed();
+    
+    
   }else if (scene == GameScenes.GAME){
     if (mouseButton==LEFT) {
       jugador1.shoot();
@@ -302,8 +306,11 @@ void mousePressed() {
 void mouseReleased(){
   if(scene == GameScenes.DEBUG_MODE){
   }else if(scene == GameScenes.MAIN_MENU){
-    confirmButton.mouseReleased();
-    quitButton.mouseReleased();
+    if (confirmButton.mouseReleased()) {
+        scene = GameScenes.GAME;
+    } else if (quitButton.mouseReleased()) {
+      exit();
+    }
   }else if(scene == GameScenes.WIN || scene == GameScenes.LOSE){
     playAgainButton.mouseReleased();
     quitButton2.mouseReleased();
