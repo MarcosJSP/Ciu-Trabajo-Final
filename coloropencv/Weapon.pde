@@ -28,7 +28,7 @@ class Weapon{
     //this.balas = new ArrayList<Bullet>();
     this.frequencyShoot = seconds;
   }
-
+  
   //Constructor alternativo sin frequencia de disparo
   Weapon(PImage asset, String type, float angle, int size, float[] shipSize, int damage,  Ship myShip){
     this.size=size;

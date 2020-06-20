@@ -45,6 +45,12 @@ float timer;
 static volatile int objectCount;
 
 boolean hitBoxBullets = false;
+PImage shipI=loadImage("./Assets/Images/Space Ship.png");
+PImage bossI=loadImage("./Assets/Boss Body.png");
+PImage bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
+PImage bulletB=loadImage("./Assets/Images/Boss small bullet.png");
+PImage shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
+
 void setup() {
   size(1280, 720, P3D);
   scene = GameScenes.MAIN_MENU;
@@ -82,11 +88,7 @@ void setup() {
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
-  PImage shipI=loadImage("./Assets/Images/Space Ship.png");
-  //PImage bossI=loadImage("./Assets/Boss Body.png");
-  PImage bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
-  PImage bulletB=loadImage("./Assets/Images/Boss small bullet.png");
-  PImage shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
+  
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves

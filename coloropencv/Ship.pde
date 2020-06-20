@@ -11,12 +11,12 @@ class Ship extends GameObject {
   }
 
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, float freqShoot, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
   }
 
   //Constructor alternativo sin freq de disparo
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
   }
 
   void changeWeapon(int n){
