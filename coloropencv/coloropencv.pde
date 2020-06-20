@@ -7,9 +7,21 @@ import org.opencv.core.*;
 import java.awt.Color;
 import java.util.concurrent.*;
 
-int status;
+public enum GameScenes {
+  DEBUG_MODE,
+  MAIN_MENU,
+  GAME,
+  WIN,
+  LOSE
+}
+
+GameScenes scene;
+
 DebugCDCalibrator debugCDCalibrator;
 InGameCDCalibrator ingameCDCalibrator;
+
+SceneDrawer sceneDrawer;
+MyButton quitButton, confirmButton, playAgainButton, quitButton2;
 
 CDController cdController;
 int rotation = 0;
@@ -35,12 +47,12 @@ static volatile int objectCount;
 boolean hitBoxBullets = false;
 void setup() {
   size(1280, 720, P3D);
-  status = 2;
+  scene = GameScenes.MAIN_MENU;
   cam = new Capture(this, 1280, 720);
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
-  back=loadImage("./Assets/Background.png");
+  back=loadImage("./Assets/Images/Background.png");
   cdController = new CDController(cam, ingameCDCalibrator);
   setupObjects();
 
@@ -56,19 +68,27 @@ void setup() {
   nThreads = Runtime.getRuntime().availableProcessors()+2;
   println("Numero de hilos: " + nThreads);
   executor = Executors.newFixedThreadPool(nThreads);
-  
-  frameRate(60);
+
+  // Creamos la clase que usaremos para pintar por pantalla
+  sceneDrawer = new SceneDrawer();
+  confirmButton = new MyButton(loadImage("./Assets/Images/Confirm button.png"), loadImage("./Assets/Images/Confirm button-pressed.png"));
+  quitButton = new MyButton(loadImage("./Assets/Images/Quit button.png"), loadImage("./Assets/Images/Quit button-pressed.png"));
+
+  playAgainButton = new MyButton(loadImage("./Assets/Images/Play again button.png"), loadImage("./Assets/Images/Play again button-pressed.png"));
+  quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
+
 }
 
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
-  PImage shipI=loadImage("./Assets/Space Ship.png");
+  PImage shipI=loadImage("./Assets/Images/Space Ship.png");
   //PImage bossI=loadImage("./Assets/Boss Body.png");
-  PImage bulletS=loadImage("./Assets/Space Ship Bullet.png");
-  PImage bulletB=loadImage("./Assets/Boss small bullet.png");
-  PImage shipI1=loadImage("./Assets/Boss Body.png");
-  shipI1.resize(30,30);
+  PImage bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
+  PImage bulletB=loadImage("./Assets/Images/Boss small bullet.png");
+  PImage shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
+  shipI1.resize(50,50);
+  bulletB.resize(20,20);
   //naves
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50000);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
@@ -81,7 +101,7 @@ void setupObjects() {
   for (int i = 0; i < 20 ; i++){
     enemigosTest[i].movement(30,(30*i)+30);
     enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
-    
+
   }
 
   //armas
@@ -97,11 +117,11 @@ void draw() {
   background(0);
   println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   cdController.updateColorDetection();
-  if (status == 0) {
-    drawDebugScreen();
-  }else if (status == 1) {
-    drawIngameScreen();
-  }else if (status == 2) {
+  if (scene == GameScenes.DEBUG_MODE) {
+    sceneDrawer.drawDebugScreen(cdController);
+  }else if (scene == GameScenes.MAIN_MENU) {
+    sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
+  }else if (scene == GameScenes.GAME) {
 
     if(y>=height){
       y=0;
@@ -133,6 +153,10 @@ void draw() {
         counter ++;
       }
     }
+  }else if(scene == GameScenes.WIN){
+    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, true);
+  }else if(scene == GameScenes.LOSE){
+    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, false);
   }
 }
 
@@ -230,58 +254,21 @@ void objectController(GameObject obj){
     }
 }
 
-void drawDebugScreen() {
-  PImage originalImg = cdController.getOriginalImage();
-  PImage filteredImg = cdController.getFilteredImage();
-  Rect rect = cdController.getRecognizedRect();
-  CDCalibrator calibrator = cdController.getCalibrator();
-  push();
-  translate(0, height/2-originalImg.height/2);
-
-  //left
-  image(filteredImg, 0, 0);
-  translate(width/2, 0);
-
-  //right
-  image(originalImg, 0, 0);
-  if (rect!=null) {
-    noFill();
-    stroke(250, 0, 0);
-    rect(rect.x, rect.y, rect.width, rect.height);
-  }
-  pop();
-  calibrator.draw();
-}
-
-void drawIngameScreen(){
-  PImage img = cdController.getOriginalImage();
-  if(img == null) return;
-  CDCalibrator calibrator = cdController.getCalibrator();
-  Rect rect = cdController.getRecognizedRect();
-  push();
-  translate(width/2-img.width/2, height/2-img.height/2);
-  image(img, 0, 0);
-  if (rect!=null) {
-    noFill();
-    stroke(250, 0, 0);
-    rect(rect.x, rect.y, rect.width, rect.height);
-  }
-  pop();
-  calibrator.draw();
-}
-
 void keyPressed(){
-  if (key=='1'){
-    status=0;
-  }else if( key == '2'){
-    status=1;
-  }else if(key=='3'){
-    status=2;
+  if (key == '1'){
+    scene = GameScenes.DEBUG_MODE;
+  }else if(key == '2'){
+    scene = GameScenes.MAIN_MENU;
+  }else if(key == '3'){
+    scene = GameScenes.GAME;
   }
 }
 
 void mouseDragged() {
-  if (status == 0 || status == 1){
+  if(scene == GameScenes.DEBUG_MODE){
+    CDCalibrator calibrator = cdController.getCalibrator();
+    calibrator.mouseDragged();
+  }else if(scene == GameScenes.MAIN_MENU){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mouseDragged();
   }
@@ -289,10 +276,15 @@ void mouseDragged() {
 
 int i = 0;
 void mousePressed() {
-  if(status == 0 || status == 1){
+  if(scene == GameScenes.DEBUG_MODE){
     CDCalibrator calibrator = cdController.getCalibrator();
     calibrator.mousePressed();
-  }else if (status == 2){
+  }else if(scene == GameScenes.MAIN_MENU){
+    CDCalibrator calibrator = cdController.getCalibrator();
+    calibrator.mousePressed();
+    confirmButton.mousePressed();
+    quitButton.mousePressed();
+  }else if (scene == GameScenes.GAME){
     if (mouseButton==LEFT) {
       jugador1.shoot();
       Weapon actualWeapon = (Weapon) jugador1.weapons.get(i);
@@ -301,5 +293,19 @@ void mousePressed() {
       i = (i+1)%jugador1.weapons.size();
       jugador1.changeWeapon(i);
     }
+  }else if (scene == GameScenes.WIN || scene == GameScenes.LOSE){
+    playAgainButton.mousePressed();
+    quitButton2.mousePressed();
+  }
+}
+
+void mouseReleased(){
+  if(scene == GameScenes.DEBUG_MODE){
+  }else if(scene == GameScenes.MAIN_MENU){
+    confirmButton.mouseReleased();
+    quitButton.mouseReleased();
+  }else if(scene == GameScenes.WIN || scene == GameScenes.LOSE){
+    playAgainButton.mouseReleased();
+    quitButton2.mouseReleased();
   }
 }
