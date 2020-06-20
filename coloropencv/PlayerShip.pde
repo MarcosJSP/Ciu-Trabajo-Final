@@ -20,4 +20,5 @@ class PlayerShip extends Ship {
               this.objectSize[0]/2.0,  this.objectSize[1]/2.0,
               this.objectSize[0]/2.0, -this.objectSize[1]/2.0);
   }
+  
 }

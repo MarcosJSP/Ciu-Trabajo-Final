@@ -34,6 +34,7 @@ int y2;
 Capture cam;
 PImage back;
 SoundFile shootSound;
+SoundFile explosionSound;
 PlayerShip jugador1;
 EnemyShip enemigo1;
 Bullet bala1;
@@ -54,6 +55,9 @@ void setup() {
   ingameCDCalibrator = new InGameCDCalibrator();
   back=loadImage("./Assets/Images/Background.png");
   shootSound=new SoundFile(this,"./Assets/Sounds/shot_1.wav");
+  shootSound.amp(0.3);
+  explosionSound=new SoundFile(this,"./Assets/Sounds/explosion.mp3");
+  explosionSound.amp(0.1);
   cdController = new CDController(cam, ingameCDCalibrator);
   setupObjects();
 
@@ -93,13 +97,13 @@ void setupObjects() {
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
-  jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50000);
-  jugador1.setShotSound(shootSound);
+  jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50);
+  //jugador1.setShotSound(shootSound);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
   //enemigo1.imageRotation = 270.0;
   jugador1.sethitBox(true);
 
-  EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
+  EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 5);
   enemigoPrueba.setimageRotation(0.0);
   EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
   for (int i = 0; i < 20 ; i++){
@@ -258,10 +262,13 @@ void objectController(GameObject obj){
     }
 }
 
-void playSound(){
+void playshootSound(){
     this.shootSound.play();
 }
 
+void playExplosionSound(){
+    this.explosionSound.play();
+}
 
 void keyPressed(){
   if (key == '1'){

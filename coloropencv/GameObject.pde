@@ -246,6 +246,7 @@ public class GameObject extends GameObjectUniverse{
 
   void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
+     
      //println("He muerto");
   }
 

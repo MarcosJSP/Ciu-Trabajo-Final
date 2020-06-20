@@ -5,8 +5,6 @@ class Ship extends GameObject {
   int hitPoints;
   int n = 0;
   ArrayList<Weapon> weapons = new ArrayList<Weapon>();
- SoundFile shootFile;
-
   Ship(PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints) {
     super(imagen, type, x, y, vel, acc, angle);
     this.locationV.set(x,y);
@@ -22,10 +20,7 @@ class Ship extends GameObject {
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
     weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>//
   }
-  
-  void setShotSound(SoundFile sound){
-    shootFile=sound;
-  }
+
 
   void changeWeapon(int n){
     if (n < weapons.size()){
@@ -107,7 +102,7 @@ class Ship extends GameObject {
   void shoot(){
     if(weapons != null) {
       weapons.get(this.n).shoot(this.velocityV);
-      if(this.shootFile != null)shootFile.play();
+      thread("playshootSound");
       
     }
   }
@@ -139,5 +134,13 @@ class Ship extends GameObject {
     triangle(-this.objectSize[0]/2.0, -this.objectSize[1]/2.0,
               this.objectSize[0]/2.0,  this.objectSize[1]/2.0,
               this.objectSize[0]/2.0, -this.objectSize[1]/2.0);
+  }
+  
+  @Override
+  void die(){
+     thread("playExplosionSound");
+     if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
+       
+     //println("He muerto");
   }
 }
