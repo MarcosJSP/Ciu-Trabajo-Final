@@ -36,51 +36,41 @@ class CDController {
   }
 
   void updateColorDetection() {
-    if (!cam.available()) return;
-    cam.read();
     lastCamFrame = mirrorImage(cam);
     img.set(0,0,lastCamFrame);
     img.copyTo();
 
     //Cambiamos el filtro de bgr a Hsv
-    Mat bgr = img.getBGR();
-    Mat hsv = new Mat();
-    Imgproc.cvtColor(bgr, hsv, Imgproc.COLOR_BGR2HSV);
+    Mat mat = img.getBGR();
+    Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGR2HSV);
 
     //Suavizamos la imagen en escala Hsv
-    Mat hsvBlur = new Mat();
-    Imgproc.medianBlur(hsv, hsvBlur, 3);
+    Imgproc.medianBlur(mat, mat, 3);
 
     //Resaltamos el color que nos interesa
-    Mat hsvRange = new Mat();
     Scalar lowerHSV = cdCalibrator.getLowerHSV();
     Scalar upperHSV = cdCalibrator.getUpperHSV();
-    Core.inRange(hsvBlur, lowerHSV, upperHSV, hsvRange);
+    Core.inRange(mat, lowerHSV, upperHSV, mat);
 
     //Erosionamos la imagen
     int erosion_size = 4;
-    Mat hsvErode =  new Mat();
     Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(erosion_size, erosion_size));
-    Imgproc.erode(hsvRange, hsvErode, element);
+    Imgproc.erode(mat, mat, element);
 
     //Dilatamos la imagen
     int dilation_size = 30;
-    Mat hsvDilate =  new Mat();
     Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(dilation_size, dilation_size));
-    Imgproc.dilate(hsvErode, hsvDilate, element1);
+    Imgproc.dilate(mat, mat, element1);
 
     //Hallamos la posición y el tamaño del objeto más grande identificado
     ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-    Mat hsvContours = new Mat();
-    Imgproc.findContours(hsvDilate, contours, hsvContours, 1, 1);
+    Imgproc.findContours(mat, contours, mat, 1, 1);
     if (contours.size() > 0) {
-
-
       Rect lastRect = getRecognizedRect();
       if(lastRect==null){
           Rect rect = Imgproc.boundingRect(contours.get(contours.size()-1));
           setRecognizedRect(rect);
-          Imgproc.rectangle(hsvDilate, rect, new Scalar(255, 0, 255), 5);
+          Imgproc.rectangle(mat, rect, new Scalar(255, 0, 255), 5);
         }else{
           for(int i=0; i < contours.size();i++){
               Rect rect = Imgproc.boundingRect(contours.get(contours.size()-1- i));
@@ -90,7 +80,7 @@ class CDController {
               
               if(checkOverlap(lastRect, rect)) {
                 setRecognizedRect(rect);
-                Imgproc.rectangle(hsvDilate, rect, new Scalar(255, 0, 255), 5);
+                Imgproc.rectangle(mat, rect, new Scalar(255, 0, 255), 5);
                 break;
               }else if(i+1 >= contours.size()){
                 setRecognizedRect(null);
@@ -104,7 +94,7 @@ class CDController {
     }
 
     //Finalmente actualizamos la imagen con los filtros
-    img.copyTo(hsvDilate);
+    img.copyTo(mat);
   }
   
   void draw() {

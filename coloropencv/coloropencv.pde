@@ -146,53 +146,55 @@ void setupObjects() {
 void draw() {
   background(0);
   println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
-  //cdController.updateColorDetection();
-  HiloCamara hilo1 = new HiloCamara();
+  
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
   }else if (scene == GameScenes.MAIN_MENU) {
     sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
   }else if (scene == GameScenes.GAME) {
-
-    if(y>=height){
-      y=0;
-    }else{
-      y=y+20;
-    }
-    
-    y2=y-back.height;
-    //y = constrain(y, 0, back.height - height);
-    image(back, 0, y);
-    image(back, 0, y2);
-    for(int i = 0; i < jugador1.hitPoints; i++) {
-        image(hitPoints_image, i*35,50);
-    }
-    //image(cdController.getFilteredImage(),0,0);
-    //println(cdController.getRecognizedRect());
-    //counter = GameObject.listaObjetos.size();
-    //-- Temporal prueba nivel
-    
-    //Arrancamos los hilos
-    timer = millis() / 1000;
-    for(int i = 0; i< GameObject.listaObjetos.size(); i++){
-      GameObject o = GameObject.listaObjetos.get(i);
-      o.show();
-    }
-
-    synchronized (GameObject.listaObjetos){
-      counter = 0;
-      Iterator ite = GameObject.listaObjetos.iterator();
-      while (ite.hasNext()){
-        GameObject o = (GameObject) ite.next();
-        Runnable worker = new WorkerThread(o, counter);
-        executor.execute(worker);
-        counter ++;
-      }
-    }
+    drawGame();
   }else if(scene == GameScenes.WIN){
     sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, true);
   }else if(scene == GameScenes.LOSE){
     sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, false);
+  }
+}
+
+void drawGame (){
+  if(y>=height){
+    y=0;
+  }else{
+    y=y+20;
+  }
+  
+  y2=y-back.height;
+  //y = constrain(y, 0, back.height - height);
+  image(back, 0, y);
+  image(back, 0, y2);
+  for(int i = 0; i < jugador1.hitPoints; i++) {
+      image(hitPoints_image, i*35,50);
+  }
+  //image(cdController.getFilteredImage(),0,0);
+  //println(cdController.getRecognizedRect());
+  //counter = GameObject.listaObjetos.size();
+  //-- Temporal prueba nivel
+  
+  //Arrancamos los hilos
+  timer = millis() / 1000;
+  for(int i = 0; i< GameObject.listaObjetos.size(); i++){
+    GameObject o = GameObject.listaObjetos.get(i);
+    o.show();
+  }
+
+  synchronized (GameObject.listaObjetos){
+    counter = 0;
+    Iterator ite = GameObject.listaObjetos.iterator();
+    while (ite.hasNext()){
+      GameObject o = (GameObject) ite.next();
+      Runnable worker = new WorkerThread(o, counter);
+      executor.execute(worker);
+      counter ++;
+    }
   }
 }
 
@@ -400,4 +402,10 @@ void mouseReleased(){
     }
     
   }
+}
+
+void captureEvent(Capture c){
+  c.read();
+  //HiloCamara hilo1 = new HiloCamara();
+  cdController.updateColorDetection();
 }
