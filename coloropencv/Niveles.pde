@@ -31,12 +31,13 @@ class Juego{
   
   //FabricaNaves -> (int nEjecuciones, int numeroNaves, float inicialX, float inicialY, float vel, float acc, 
   //   float dir, int hitPoints, String tipoEscuadron, String tipoNave, String tipoArma, PImage imagen){
+    
   private Nivel nivel_1(){
-    FabricaNaves fabrica1 = new FabricaNaves(8, 2,  width/2.0, -50.0,      3.0, 0.0, GameObject.bot,   GameObject.bot,   3, "lineaRectaHorizontal", "normal",    "normal",    shipI1);
-    FabricaNaves fabrica2 = new FabricaNaves(2, 10,  10,        height+50,  3.0, 0.0, GameObject.top,   GameObject.top,   3, "lineaRectaHorizontal", "normal",    "triple",    shipI1);
-    FabricaNaves fabrica3 = new FabricaNaves(8, 8,  10,        height+50,  2.0, 0.0, GameObject.top,   GameObject.right, 3, "lineaRectaVertical",   "normal",    "circulo",   shipI1);
-    FabricaNaves fabrica4 = new FabricaNaves(3, 5, -10,        height/2.0, 4.0, 0.0, GameObject.right, GameObject.right, 3, "lineaInclinadaIzq",    "serpiente", "normal",    shipI1);
-    FabricaNaves fabrica5 = new FabricaNaves(5, 3,  width+30,  height/2.0, 3.0, 0.0, GameObject.left,  GameObject.left,  3, "lineaInclinadaDer",    "normal",    "serpiente", shipI1);
+    FabricaNaves fabrica1 = new FabricaNaves(3, 3,  width/2.0,         -100,        3.0, 0.1, GameObject.bot,   GameObject.bot,   3, "lineaRectaHorizontal", "normal",    "normal",    shipI1);
+    FabricaNaves fabrica2 = new FabricaNaves(5, 3,  100,               height+100,  3.0, 0.0, GameObject.top,   GameObject.top,   3, "lineaRectaHorizontal", "normal",    "triple",    shipI1);
+    FabricaNaves fabrica3 = new FabricaNaves(2, 3,  200,               height+100,  2.0, 0.0, GameObject.top,   GameObject.right, 3, "lineaRectaVertical",   "normal",    "circulo",   shipI1);
+    FabricaNaves fabrica4 = new FabricaNaves(4, 3,  -100,              height-100,  4.0, 0.2, GameObject.right, GameObject.right, 3, "lineaInclinadaIzq",    "serpiente", "normal",    shipI1);
+    FabricaNaves fabrica5 = new FabricaNaves(6, 3,  width+100,         height-100,  3.0, 0.1, GameObject.left,  GameObject.left,  3, "lineaInclinadaDer",    "normal",    "serpiente", shipI1);
     
     Flota e1 = new Flota();
     Flota e2 = new Flota();
@@ -201,11 +202,11 @@ class FabricaNaves{
   private String tipoEscuadron, tipoNave, tipoArma;
   private float vel, acc;
   private PImage asset;
-  private float offsetX;
-  private float offsetY;
+  private float offsetX = 0;
+  private float offsetY = 0;
   private float frequency = 2.5;
   private int damage = 1;
-  private PImage bulletI = loadImage("./Assets/Images/Boss small bullet.png");
+  private PImage bulletI = bulletB;
   private float dirShoot;
   FabricaNaves(int nEjecuciones, int numeroNaves, float inicialX, float inicialY, float vel, float acc, float dir, float dirShoot, int hitPoints, String tipoEscuadron, String tipoNave, String tipoArma, PImage imagen){
     this.numeroNaves = numeroNaves;
@@ -218,8 +219,8 @@ class FabricaNaves{
     this.acc = acc;
     this.hitPoints = hitPoints;
     this.asset = imagen;
-    this.offsetX = imagen.width * 2;
-    this.offsetY = imagen.height * 2;
+    this.offsetX = imagen.width*2;
+    this.offsetY = imagen.height*2;
     this.tipoArma = tipoArma;
     this.nEjecuciones = nEjecuciones;
     this.dirShoot = dirShoot;
@@ -238,38 +239,69 @@ class FabricaNaves{
     switch(this.tipoEscuadron){
       case "lineaRectaHorizontal":
         for(int i = 0; i < numeroNaves ; i++){
-          crearNave(offsetX*i, 0);
+          this.offsetX = (offsetX * i);
+          this.offsetY = 0;
+          crearNave();
         }
         break;
       
       case "lineaRectaVertical":
         for(int i = 0; i < numeroNaves ; i++){
-          crearNave(0, offsetY*i);
+          this.offsetX = 0;
+          this.offsetY = (offsetY * i);
+          crearNave();
         }
         break;
       
       case "lineaInclinadaIzq":
         for(int i = 0; i < numeroNaves ; i++){
-          crearNave(offsetY*i, offsetY*i);
+          offsetX = -(offsetX * i);
+          offsetY = -(offsetY * i);
+          crearNave();
         }
         break;
       
       case "lineaInclinadaDer":
         for(int i = 0; i < numeroNaves ; i++){
-          crearNave(offsetX*i, -offsetY*i);
+          offsetX = (offsetX * i);
+          offsetY = -(offsetY * i);
+          crearNave();
         }
         break;
       
       case "circulo":
+        for(int i = 0; i < numeroNaves ; i++){
+          float offsetX2 = offsetX;
+          offsetX = offsetX2 * cos(radians(i*360/numeroNaves)) - offsetY * sin(radians(i*360/numeroNaves));
+          offsetY = offsetX2 * sin(radians(i*360/numeroNaves)) + offsetY * cos(radians(i*360/numeroNaves));
+          crearNave();
+        }
         break;
       
       case "flecha":
+        for(int i = 0; i < numeroNaves ; i++){
+          if (i == 0){
+            crearNave();
+          }else if (i%2 == 0){
+            offsetY = offsetY*i;
+            offsetX = offsetX*i;
+            crearNave();
+            offsetX = -offsetX*i;
+            crearNave();
+          }else if (i == numeroNaves-1){
+            offsetY = offsetY*i;
+            offsetX = offsetX*i;
+            crearNave();
+          }else{
+            
+          }
+        }
         break;
     }
   }
   
- void crearNave(float offsetX, float offsetY){
-    EnemyShip o = new EnemyShip(this.asset, this.tipoNave, this.inicialX+offsetX, this.inicialY+offsetY, this.vel, this.acc, this.dir, this.hitPoints);      
+ void crearNave(){
+    EnemyShip o = new EnemyShip(this.asset, this.tipoNave, this.inicialX+this.offsetX, this.inicialY+this.offsetY, this.vel, this.acc, this.dir, this.hitPoints);      
     if (frequency > 0){
       o.setWeapon(this.bulletI, this.tipoArma, this.damage, this.dirShoot, 10, this.frequency, color(255,0,0));
     }else{
@@ -288,4 +320,9 @@ class FabricaNaves{
   void setBulletImage(PImage bulletI){
     this.bulletI = bulletI;
   }
+}
+
+public void changeRandomSeed(){
+  int randomanize = year() * month() * day() * hour() * minute() * second();
+  randomSeed(randomanize);
 }

@@ -13,12 +13,12 @@ class Ship extends GameObject {
   }
 
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, float freqShoot, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>// //<>//
   }
 
   //Constructor alternativo sin freq de disparo
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>// //<>//
   }
 
 
@@ -103,7 +103,6 @@ class Ship extends GameObject {
     if(weapons != null) {
       weapons.get(this.n).shoot(this.velocityV);
       thread("playshootSound");
-      
     }
   }
   
@@ -123,6 +122,7 @@ class Ship extends GameObject {
   void sufferDamage(int damage){
     this.hitPoints -= damage;
     if(this.hitPoints <= 0){
+      thread("playExplosionSound");
       this.die();
       println("Oh Vaya, ha muerto por disparos:" + this);
     }
@@ -138,7 +138,6 @@ class Ship extends GameObject {
   
   @Override
   void die(){
-     thread("playExplosionSound");
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
        
      //println("He muerto");

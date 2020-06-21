@@ -38,7 +38,6 @@ SoundFile explosionSound;
 PImage hitPoints_image;
 
 PlayerShip jugador1;
-EnemyShip enemigo1;
 Bullet bala1;
 
 int counter;
@@ -59,6 +58,7 @@ PImage shipI1;
 Juego juego;
 void setup() {
   size(1280, 720, P3D);
+  //surface.setResizable(true);
   
   //Inicializamos las imagenes
   shipI=loadImage("./Assets/Images/Space Ship.png");
@@ -121,32 +121,17 @@ void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
   hitBoxBullets = false;
-  shipI1.resize(50,50);
-  bulletB.resize(20,20);
+  shipI1.resize(50, 50);
+  bulletB.resize(20, 20);
   //naves
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 10);
-  //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
-  //enemigo1.imageRotation = 270.0;
-  //jugador1.sethitBox(true);
   jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "limon", 1, 180.0, 10, color(255,0,255));
-  
-  /*
-  EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
-  enemigoPrueba.setimageRotation(0.0);
-  EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
-  for (int i = 0; i < 20 ; i++){
-    enemigosTest[i].movement(30,(30*i)+30);
-    enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
-
-  }
- */
-  //armas
-  //enemigo1.setWeapon(bulletB, "normal", 1, 90.0, 10, color(255,0,0));
+  //jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
+  //jugador1.setWeapon(bulletS, "limon", 1, 180.0, 10, color(255,0,255));
 }
 
 void draw() {
+  
   background(0);
   println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   
@@ -175,14 +160,15 @@ void drawGame (){
   
   y2=y-back.height;
   //y = constrain(y, 0, back.height - height);
+  //surface.setSize(width, height);
+  //back.resize(width, height);
   image(back, 0, y);
   image(back, 0, y2);
   for(int i = 0; i < jugador1.hitPoints; i++) {
-      image(hitPoints_image, i*35,50);
+      image(hitPoints_image, (i*35)+20, 30);
   }
   //image(cdController.getFilteredImage(),0,0);
   //println(cdController.getRecognizedRect());
-  //counter = GameObject.listaObjetos.size();
   //-- Temporal prueba nivel
   
   //Arrancamos los hilos
@@ -288,9 +274,19 @@ void objectController(GameObject obj){
         posY=posRect.y;
       }
       obj.setPosition(mouseX, mouseY);
-      if (this.frameCount%15 == 0){
-        obj.setimageRotation(rotation);
-        //rotation = (rotation + 15)%360;
+      synchronized(GameObject.listaObjetos){
+        Iterator ite = GameObject.listaObjetos.copy().lista.iterator();
+        while ( ite.hasNext() ){
+          GameObject o = (GameObject)ite.next();
+          if( o instanceof EnemyShip){
+            EnemyShip e = (EnemyShip) o;
+            PlayerShip p = (PlayerShip) obj;
+            if(p.hasCollisioned(e)){
+              e.die();
+              p.sufferDamage(1);
+            }
+          }
+        }
       }
     }
 
