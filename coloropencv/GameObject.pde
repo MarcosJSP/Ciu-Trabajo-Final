@@ -30,6 +30,12 @@ static class synchronizedGameObjectList {
       this.lista.remove(o);
     }
   }
+  
+  void clear(){
+    synchronized(lista){
+      this.lista.clear();
+    }
+  }
 
   boolean contains(GameObject o){
     synchronized(lista){

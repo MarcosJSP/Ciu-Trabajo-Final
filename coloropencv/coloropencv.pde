@@ -79,7 +79,7 @@ void setup() {
   explosionSound=new SoundFile(this,"./Assets/Sounds/explosion.mp3");
   explosionSound.amp(0.1);
   cdController = new CDController(cam, ingameCDCalibrator);
-  setupObjects();
+  
 
   value = 5;
   y=0;
@@ -107,17 +107,20 @@ void setup() {
 
 
   //Inicializamos el juego
-  juego = new Juego();
+ initGame();
+}
+
+void initGame(){
+    setupObjects();
+   juego = new Juego();
   juego.cargarNivelesPredeterminados();
   HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
 }
 
-
-
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
-  hitBoxBullets = true;
+  hitBoxBullets = false;
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
@@ -125,9 +128,9 @@ void setupObjects() {
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
   //enemigo1.imageRotation = 270.0;
   //jugador1.sethitBox(true);
-  jugador1.setWeapon(bulletS, "limon", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "circuloInvertido2", 1, 270.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "circuloInvertido", 1, 180.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
+  jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "limon", 1, 180.0, 10, color(255,0,255));
   
   /*
   EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
@@ -161,6 +164,9 @@ void draw() {
 }
 
 void drawGame (){
+  if(jugador1.hitPoints<=0){
+    scene= GameScenes.LOSE;
+  }
   if(y>=height){
     y=0;
   }else{
@@ -196,6 +202,7 @@ void drawGame (){
       counter ++;
     }
   }
+
 }
 
 synchronized void subCounter(){
@@ -395,7 +402,13 @@ void mouseReleased(){
     }
   }else if(scene == GameScenes.WIN || scene == GameScenes.LOSE){
     if (playAgainButton.mouseReleased()) {
-        scene = GameScenes.GAME;
+      synchronized(GameObject.listaObjetos){
+        GameObject.listaObjetos.clear();
+      }
+      initGame();
+      
+      scene = GameScenes.GAME;
+        
     }
     if (quitButton2.mouseReleased()) {
       exit();
