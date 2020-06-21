@@ -45,14 +45,26 @@ float timer;
 static volatile int objectCount;
 
 boolean hitBoxBullets = false;
-PImage shipI=loadImage("./Assets/Images/Space Ship.png");
-PImage bossI=loadImage("./Assets/Boss Body.png");
-PImage bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
-PImage bulletB=loadImage("./Assets/Images/Boss small bullet.png");
-PImage shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
 
+//Imagenes
+PImage shipI;
+PImage bossI;
+PImage bulletS;
+PImage bulletB;
+PImage shipI1;
+
+Juego juego;
 void setup() {
   size(1280, 720, P3D);
+  
+  //Inicializamos las imagenes
+  shipI=loadImage("./Assets/Images/Space Ship.png");
+  bossI=loadImage("./Assets/Boss - UFO.png");
+  bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
+  bulletB=loadImage("./Assets/Images/Boss small bullet.png");
+  shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
+  
+  //Cosas
   scene = GameScenes.MAIN_MENU;
   cam = new Capture(this, 1280, 720);
 
@@ -83,20 +95,29 @@ void setup() {
   playAgainButton = new MyButton(loadImage("./Assets/Images/Play again button.png"), loadImage("./Assets/Images/Play again button-pressed.png"));
   quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
 
+
+  //Inicializamos el juego
+  juego = new Juego();
+  juego.cargarNivelesPredeterminados();
+  HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
 }
 
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
-  
+  hitBoxBullets = true;
   shipI1.resize(50,50);
   bulletB.resize(20,20);
   //naves
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 50000);
   //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
   //enemigo1.imageRotation = 270.0;
-  jugador1.sethitBox(true);
-
+  //jugador1.sethitBox(true);
+  jugador1.setWeapon(bulletS, "limon", 1, 270.0, 10, color(0,255,0));
+  jugador1.setWeapon(bulletS, "circuloInvertido2", 1, 270.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "circuloInvertido", 1, 180.0, 10, color(255,0,255));
+  
+  /*
   EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
   enemigoPrueba.setimageRotation(0.0);
   EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
@@ -105,20 +126,16 @@ void setupObjects() {
     enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
 
   }
-
+ */
   //armas
   //enemigo1.setWeapon(bulletB, "normal", 1, 90.0, 10, color(255,0,0));
-
-  jugador1.setWeapon(bulletS, "limon", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "circuloInvertido2", 1, 270.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "circuloInvertido", 1, 180.0, 10, color(255,0,255));
-  hitBoxBullets = true;
 }
 
 void draw() {
   background(0);
   println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
-  cdController.updateColorDetection();
+  //cdController.updateColorDetection();
+  HiloCamara hilo1 = new HiloCamara();
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
   }else if (scene == GameScenes.MAIN_MENU) {
@@ -130,7 +147,7 @@ void draw() {
     }else{
       y=y+20;
     }
-
+    
     y2=y-back.height;
     //y = constrain(y, 0, back.height - height);
     image(back, 0, y);
@@ -138,6 +155,8 @@ void draw() {
     //image(cdController.getFilteredImage(),0,0);
     //println(cdController.getRecognizedRect());
     //counter = GameObject.listaObjetos.size();
+    //-- Temporal prueba nivel
+    
     //Arrancamos los hilos
     timer = millis() / 1000;
     for(int i = 0; i< GameObject.listaObjetos.size(); i++){
@@ -185,6 +204,42 @@ public class WorkerThread implements Runnable {
   public void run(){
       objectController(this.object);
       //println(this.name + " esta trabajando");
+  }
+}
+
+public class HiloCamara implements Runnable {
+  String name;
+  Thread t;
+  int i ;
+  
+  GameObject object;
+  public HiloCamara(){
+    name = "hilo -> HiloCamara";
+    t = new Thread(this, name);
+    t.start();
+    System.out.println("New thread: " + name);
+  }
+
+  public void run(){
+      cdController.updateColorDetection();
+  }
+}
+
+public class HiloGeneracionNivel implements Runnable {
+  String name;
+  Thread t;
+  int i ;
+  
+  GameObject object;
+  public HiloGeneracionNivel(){
+    name = "hilo -> HiloGeneracionNivel";
+    t = new Thread(this, name);
+    t.start();
+    System.out.println("New thread: " + name);
+  }
+
+  public void run(){
+      juego.ejecutar(0);
   }
 }
 
@@ -242,7 +297,7 @@ void objectController(GameObject obj){
     // seccion de colisiones
     // exterior
     synchronized(GameObject.listaObjetos){
-      if (obj.hasExited(100)){
+      if (obj.hasExited(200)){
           obj.die();
       }
     }
