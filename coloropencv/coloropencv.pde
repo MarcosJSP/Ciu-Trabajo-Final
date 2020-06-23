@@ -107,16 +107,20 @@ void setup() {
 
 
   //Inicializamos el juego
- initGame();
+  setupObjects();
 }
 
 void initGame(){
-    setupObjects();
-   juego = new Juego();
-  juego.cargarNivelesPredeterminados();
-  HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
+  GameObject.listaObjetos.clear();
+  setupObjects();
+  //PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints
+  EnemyShip s1 = new EnemyShip(shipI1, "rebote", width/2.0, width/2.0, 2, 2, GameObject.bot, 3);
+  s1.setWeapon(bulletS, "triple", 1, GameObject.bot, 10, 3,color(0,255,0));
+  
+  //juego = new Juego();
+  //juego.cargarNivelesPredeterminados();
+  //HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
 }
-
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
@@ -131,10 +135,8 @@ void setupObjects() {
 }
 
 void draw() {
-  
   background(0);
-  println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
-  
+  //println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
   }else if (scene == GameScenes.MAIN_MENU) {
@@ -169,7 +171,6 @@ void drawGame (){
   }
   //image(cdController.getFilteredImage(),0,0);
   //println(cdController.getRecognizedRect());
-  //-- Temporal prueba nivel
   
   //Arrancamos los hilos
   timer = millis() / 1000;
@@ -188,12 +189,6 @@ void drawGame (){
       counter ++;
     }
   }
-
-}
-
-synchronized void subCounter(){
-    counter = counter - 1;
-    println(counter);
 }
 
 //println("Frames: " + frameRate);
@@ -255,6 +250,8 @@ public class HiloGeneracionNivel implements Runnable {
 
 void objectController(GameObject obj){
     // Sección de jugador
+    obj.movement();
+    
     if (obj instanceof Ship){
       Ship objS = (Ship) obj;
       if (objS.hasWeapon()){
@@ -321,14 +318,6 @@ void objectController(GameObject obj){
           obj.die();
       }
     }
-
-
-    obj.movement();
-
-    // contador
-    if (count > 10) {
-      count = 0;
-    }
 }
 
 void playshootSound(){
@@ -346,6 +335,7 @@ void keyPressed(){
     scene = GameScenes.MAIN_MENU;
   }else if(key == '3'){
     scene = GameScenes.GAME;
+    initGame();
   }
 }
 
@@ -376,7 +366,7 @@ void mousePressed() {
   }else if (scene == GameScenes.GAME){
     if (mouseButton==LEFT) {
       jugador1.shoot();
-      Weapon actualWeapon = (Weapon) jugador1.weapons.get(i);
+      //Weapon actualWeapon = (Weapon) jugador1.weapons.get(i);
       //println("Estas usando el arma :" + actualWeapon.type);
     } else if(mouseButton==RIGHT){
       i = (i+1)%jugador1.weapons.size();
@@ -402,9 +392,7 @@ void mouseReleased(){
         GameObject.listaObjetos.clear();
       }
       initGame();
-      
       scene = GameScenes.GAME;
-        
     }
     if (quitButton2.mouseReleased()) {
       exit();
@@ -416,5 +404,5 @@ void mouseReleased(){
 void captureEvent(Capture c){
   c.read();
   //HiloCamara hilo1 = new HiloCamara();
-  cdController.updateColorDetection();
+  //cdController.updateColorDetection();
 }

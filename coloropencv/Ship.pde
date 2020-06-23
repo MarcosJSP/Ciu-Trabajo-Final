@@ -1,10 +1,10 @@
 import processing.sound.*;
 
 class Ship extends GameObject {
-  
   int hitPoints;
   int n = 0;
   ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+  
   Ship(PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints) {
     super(imagen, type, x, y, vel, acc, angle);
     this.locationV.set(x,y);
@@ -106,8 +106,6 @@ class Ship extends GameObject {
     }
   }
   
-
-
   Weapon getWeapon(){
     return weapons.get(this.n);
   }

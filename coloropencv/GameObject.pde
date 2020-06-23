@@ -57,7 +57,7 @@ static class synchronizedGameObjectList {
 }
 static abstract class GameObjectUniverse {
   static final synchronizedGameObjectList listaObjetos = new synchronizedGameObjectList();
-  static final float top = 270.0 ;
+  static final float top = 270.0;
   static final float bot = 90.0;
   static final float right = 0.0;
   static final float left = 180.0;

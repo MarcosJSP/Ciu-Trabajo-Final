@@ -1,5 +1,6 @@
 class PlayerShip extends Ship {
 
+  
   //Constructor sin imagen (necesitamos tamaño)
   PlayerShip(float x, float y, float vel, float acc, float angle, float size,int hitPoints) {
     super(null, null, x, y, vel, acc, angle,hitPoints);
