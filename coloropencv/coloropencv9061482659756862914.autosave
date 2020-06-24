@@ -154,8 +154,7 @@ void draw() {
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
   }else if (scene == GameScenes.MAIN_MENU) {
-    if(!gameHasStarted) sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
-    else sceneDrawer.drawIngameScreen(cdController, confirmButton, backButton, quitButton);
+    sceneDrawer.drawIngameScreen(cdController, confirmButton, gameHasStarted ?  backButton : quitButton);
   }else if (scene == GameScenes.GAME) {
     gameHasStarted=true;
     drawGame();

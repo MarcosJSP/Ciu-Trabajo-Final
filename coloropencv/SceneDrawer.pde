@@ -41,7 +41,7 @@ class SceneDrawer{
     pop();
   }
   
-  void drawIngameScreen(CDController cdc, MyButton confirmButton, MyButton quitButton) {
+  void drawIngameScreen(CDController cdc, MyButton confirmButton, MyButton topRightButton) {
     PImage originalImg = cdc.getOriginalImage();
     if(originalImg == null) return;
     Rect rect = cdc.getRecognizedRect();
@@ -92,14 +92,24 @@ class SceneDrawer{
 
     pop();
 
-    //paint quit button
+    //paint topRightButton button
     push();
-    translate(width-quitButton.w-45,quitButton.h);
+    translate(width-topRightButton.w-45,topRightButton.h);
+    topRightButton.draw();
+    pop();
+  }
+
+  void drawIngameScreen(CDController cdc, MyButton confirmButton, MyButton backButton, MyButton quitButton){
+    drawIngameScreen(cdc, confirmButton, backButton);
+    //paint topRightButton button
+    push();
+    translate(width-backButton.w-45,backButton.h);
+    translate(-quitButton.w - 20,0);
     quitButton.draw();
     pop();
   }
 
-  void gameEndScreen(CDController cdc, MyButton playAgainButton, MyButton quitButton, Boolean victory) {
+  void gameEndScreen(CDController cdc, MyButton playAgainButton, MyButton quitButton, MyButton configButton, Boolean victory) {
     PImage originalImg = cdc.getOriginalImage();
     if(originalImg == null) return;
     Rect rect = cdc.getRecognizedRect();
@@ -110,6 +120,12 @@ class SceneDrawer{
     
     //paint background transparency
     image(semitransparentBackground,0,0);
+
+    //paint config button
+    push();
+    translate(width-configButton.w-45,configButton.h);
+    configButton.draw();
+    pop();
 
     translate(width/2, height/2);
     translate(-thiccckModal.width/2, - thiccckModal.height/2);

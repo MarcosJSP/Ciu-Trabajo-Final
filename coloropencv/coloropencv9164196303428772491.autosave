@@ -1,4 +1,4 @@
-import processing.video.*;
+3import processing.video.*;
 import java.lang.*;
 import cvimage.*;
 import java.util.*;
@@ -7,7 +7,6 @@ import org.opencv.core.*;
 import java.awt.Color;
 import java.util.concurrent.*;
 import processing.sound.*;
-
 public enum GameScenes {
   DEBUG_MODE,
   MAIN_MENU,
@@ -15,7 +14,6 @@ public enum GameScenes {
   WIN,
   LOSE
 }
-boolean gameHasStarted = false;
 
 GameScenes scene;
 
@@ -23,7 +21,7 @@ DebugCDCalibrator debugCDCalibrator;
 InGameCDCalibrator ingameCDCalibrator;
 
 SceneDrawer sceneDrawer;
-MyButton quitButton, confirmButton, playAgainButton, quitButton2, backButton, configButton;
+MyButton quitButton, confirmButton, playAgainButton, quitButton2;
 
 CDController cdController;
 int rotation = 0;
@@ -82,6 +80,7 @@ void setup() {
   explosionSound.amp(0.1);
   cdController = new CDController(cam, ingameCDCalibrator);
   
+
   value = 5;
   y=0;
   y2=0;
@@ -102,19 +101,18 @@ void setup() {
 
   playAgainButton = new MyButton(loadImage("./Assets/Images/Play again button.png"), loadImage("./Assets/Images/Play again button-pressed.png"));
   quitButton2 = new MyButton(loadImage("./Assets/Images/Quit button2.png"), loadImage("./Assets/Images/Quit button2-pressed.png"));
-  backButton = new MyButton(loadImage("./Assets/Images/Back button.png"), loadImage("./Assets/Images/Back button-pressed.png"));
-  configButton = new MyButton(loadImage("./Assets/Images/Config button.png"), loadImage("./Assets/Images/Config button-pressed.png"));
-
+  
   // cargamos la vida 
   hitPoints_image = loadImage("./Assets/Images/Heart.png");
 
+
   //Inicializamos el juego
-  initGame();
+ initGame();
 }
 
 void initGame(){
-  setupObjects();
-  juego = new Juego();
+    setupObjects();
+   juego = new Juego();
   juego.cargarNivelesPredeterminados();
   HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
 }
@@ -150,25 +148,26 @@ void setupObjects() {
 
 void draw() {
   println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
-  background(0);
+  
   if (scene == GameScenes.DEBUG_MODE) {
+    background(0);
     sceneDrawer.drawDebugScreen(cdController);
   }else if (scene == GameScenes.MAIN_MENU) {
-    if(!gameHasStarted) sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
-    else sceneDrawer.drawIngameScreen(cdController, confirmButton, backButton, quitButton);
+    background(0);
+    sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
   }else if (scene == GameScenes.GAME) {
-    gameHasStarted=true;
+    background(0);
     drawGame();
   }else if(scene == GameScenes.WIN){
-    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, configButton, true);
+    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, true);
   }else if(scene == GameScenes.LOSE){
-    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, configButton, false);
+    sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, false);
   }
 }
 
 void drawGame (){
   if(jugador1.hitPoints<=0){
-    scene = GameScenes.LOSE;
+    scene= GameScenes.LOSE;
   }
   if(y>=height){
     y=0;
@@ -183,12 +182,6 @@ void drawGame (){
   for(int i = 0; i < jugador1.hitPoints; i++) {
       image(hitPoints_image, i*35,50);
   }
-
-  push();
-  translate(width-configButton.w-45,configButton.h);
-  configButton.draw();
-  pop();
-
   //image(cdController.getFilteredImage(),0,0);
   //println(cdController.getRecognizedRect());
   //counter = GameObject.listaObjetos.size();
@@ -384,7 +377,7 @@ void mousePressed() {
     calibrator.mousePressed();
     confirmButton.mousePressed();
     quitButton.mousePressed();
-    backButton.mousePressed();
+    
     
   }else if (scene == GameScenes.GAME){
     if (mouseButton==LEFT) {
@@ -395,13 +388,9 @@ void mousePressed() {
       i = (i+1)%jugador1.weapons.size();
       jugador1.changeWeapon(i);
     }
-
-    configButton.mousePressed();
-
   }else if (scene == GameScenes.WIN || scene == GameScenes.LOSE){
     playAgainButton.mousePressed();
     quitButton2.mousePressed();
-    configButton.mousePressed();
   }
 }
 
@@ -412,8 +401,6 @@ void mouseReleased(){
         scene = GameScenes.GAME;
     } else if (quitButton.mouseReleased()) {
       exit();
-    }else if(backButton.mouseReleased()){
-      scene = GameScenes.GAME;
     }
   }else if(scene == GameScenes.WIN || scene == GameScenes.LOSE){
     if (playAgainButton.mouseReleased()) {
@@ -428,14 +415,8 @@ void mouseReleased(){
     if (quitButton2.mouseReleased()) {
       exit();
     }
-
+    
   }
-
-  if(configButton.mouseReleased()){
-      scene = GameScenes.MAIN_MENU;
-  }
-
-  
 }
 
 void captureEvent(Capture c){
