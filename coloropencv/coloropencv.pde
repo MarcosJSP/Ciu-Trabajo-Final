@@ -62,7 +62,7 @@ void setup() {
   
   //Inicializamos las imagenes
   shipI=loadImage("./Assets/Images/Space Ship.png");
-  bossI=loadImage("./Assets/Boss - UFO.png");
+  bossI=loadImage("./Assets/Images/Boss - UFO.png");
   bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
   bulletB=loadImage("./Assets/Images/Boss small bullet.png");
   shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
@@ -76,7 +76,7 @@ void setup() {
   back=loadImage("./Assets/Images/Background.png");
   shootSound=new SoundFile(this,"./Assets/Sounds/shot_1.wav");
   shootSound.amp(0.3);
-  explosionSound=new SoundFile(this,"./Assets/Sounds/explosion.mp3");
+  explosionSound=new SoundFile(this,"./Assets/Sounds/explosion.wav");
   explosionSound.amp(0.1);
   cdController = new CDController(cam, ingameCDCalibrator);
   
