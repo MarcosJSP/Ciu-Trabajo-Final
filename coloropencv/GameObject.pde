@@ -177,7 +177,7 @@ public class GameObject extends GameObjectUniverse{
     return result;
   }
 
-  float[] getSize () {
+  float[] getSize(){
     return this.objectSize;
   }
 

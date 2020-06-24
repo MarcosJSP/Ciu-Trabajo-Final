@@ -32,20 +32,27 @@ class Juego{
   //float dir, int hitPoints, String tipoEscuadron, String tipoNave, String tipoArma, PImage imagen){
     
   private Nivel nivel_1(){
-    FabricaNaves fabrica1 = new FabricaNaves(4, 5,  width/2.0,           -100,      2.0, 0.1, GameObject.bot,   GameObject.bot,   3, "flecha",               "normal",    "normal",    shipI1);
-    FabricaNaves fabrica2 = new FabricaNaves(5, 4,  100,               height+100,  3.0, 0.0, GameObject.top,   GameObject.top,   3, "lineaRectaHorizontal", "normal",    "triple",    shipI1);
-    FabricaNaves fabrica3 = new FabricaNaves(3, 5,  200,               height+100,  2.0, 0.0, GameObject.top,   GameObject.right, 3, "lineaRectaVertical",   "normal",    "normal",   shipI1);
-    FabricaNaves fabrica4 = new FabricaNaves(4, 6,  -100,              height-200,  0.5, 1, GameObject.right,   GameObject.right, 3, "lineaInclinadaIzq",    "serpiente", "normal",    shipI1);
-    FabricaNaves fabrica5 = new FabricaNaves(6, 6,  width+100,         height-100,  3.0, 0.1, GameObject.left,  GameObject.left,  3, "lineaInclinadaDer",    "normal",    "serpiente", shipI1);
+    FabricaNaves fabrica1 = new FabricaNaves  (1, 6,  width/2.0,           -100,      2.0, 0.1, GameObject.bot,   GameObject.bot,   3, "flecha",               "normal",    "normal",    shipI1);
+    FabricaNaves fabrica2 = new FabricaNaves  (1, 6,  100,               height+100,  3.0, 0.0, GameObject.top,   GameObject.top,   3, "lineaRectaHorizontal", "normal",    "triple",    shipI1);
+    FabricaNaves fabrica3 = new FabricaNaves  (1, 6,  200,               height+100,  2.0, 0.0, GameObject.top,   GameObject.right, 3, "lineaRectaVertical",   "normal",    "normal",   shipI1);
+    FabricaNaves fabrica4 = new FabricaNaves  (1, 6,  -100,              height-200,  0.5, 1, GameObject.right,   GameObject.right, 3, "lineaInclinadaIzq",    "serpiente", "normal",    shipI1);
+    FabricaNaves fabrica5 = new FabricaNaves  (1, 6,  width+100,         height-100,  3.0, 0.1, GameObject.left,  GameObject.left,  3, "lineaInclinadaDer",    "normal",    "serpiente", shipI1);
+    FabricaNaves boss     = new FabricaNaves  (1, 1,  width/2.0, 50, 2.0, 0.1, GameObject.right, GameObject.bot, 100, "boss", "rebote", "serpiente", bossI);
+    FabricaNaves mejora   = new FabricaMejoras(1, 1, width+100, height/2, 0.0, 0.0, GameObject.left, "Triple", "normal");
+    FabricaNaves mejora2  = new FabricaMejoras(1, 1, - 200, height/2-100, 5.0, 0.0, GameObject.right, "Serpiente", "rebote");
+    FabricaNaves mejora3  = new FabricaMejoras(1, 1, (width/2.0), -100, 5.0, 0.0, GameObject.bot, "Limon", "normal");
     
     Flota e1 = new Flota(5);
     Flota e2 = new Flota(3);
     Flota e3 = new Flota(4);
+    Flota e4 = new Flota(10);
+    Flota m1 = new Flota(3);
+    Flota m2 = new Flota(3);
+    Flota m3 = new Flota(3);
     
     e1.addFabrica(fabrica1);
     e1.addFabrica(fabrica2);
     e1.addFabrica(fabrica3);
-    
     
     e2.addFabrica(fabrica4);
     e2.addFabrica(fabrica5);
@@ -55,14 +62,23 @@ class Juego{
     e3.addFabrica(fabrica4);
     e3.addFabrica(fabrica3);
     
+    e4.addFabrica(boss);
+    
+    m1.addFabrica(mejora);
+    m2.addFabrica(mejora2);
+    m3.addFabrica(mejora3);
+    
     Fase fase1 = new Fase(3);
     Fase fase2 = new Fase(3);
     Fase fase3 = new Fase(3);
+    Fase fase4 = new Fase(3);
     
     fase1.addFlota(e1);
-    fase1.addFlota(e1);
-    fase1.addFlota(e1);
-    fase1.addFlota(e1);
+    fase1.addFlota(e2);
+    fase1.addFlota(m2);
+    fase1.addFlota(e3);
+    fase1.addFlota(m1);
+    fase1.addFlota(e2);
     fase1.addFlota(e1);
     fase1.addFlota(e1);
     
@@ -70,38 +86,49 @@ class Juego{
     fase2.addFlota(e3);
     fase2.addFlota(e2);
     fase2.addFlota(e1);
+    fase2.addFlota(m2);
     fase2.addFlota(e3);
     fase2.addFlota(e2);
+    fase2.addFlota(m3);
     fase2.addFlota(e3);
     fase2.addFlota(e2);
     
     fase3.addFlota(e2);
     fase3.addFlota(e1);
+    fase3.addFlota(m1);
     fase3.addFlota(e3);
+    fase3.addFlota(m3);
     fase3.addFlota(e2);
     fase3.addFlota(e3);
+    fase3.addFlota(m2);
     fase3.addFlota(e2);
     
+    fase4.addFlota(e4);
+    fase4.addFlota(m1);
+    fase4.addFlota(m2);
+    fase4.addFlota(m3);
+    
     Nivel nivel_1 = new Nivel();
-    nivel_1.addFase(fase2);
     nivel_1.addFase(fase1);
+    nivel_1.addFase(fase2);
     nivel_1.addFase(fase3);
+    nivel_1.addFase(fase4);
     return nivel_1;
   }
   
   
   private Nivel nivel_2(){
-    FabricaNaves fabrica1 = new FabricaNaves(4, 5,  width/2.0, -100, 2.0, 0.1, GameObject.bot,   GameObject.bot, 3, "flecha", "normal", "normal", shipI1);
+    FabricaNaves boss = new FabricaNaves(1, 1,  width/2.0, 50, 2.0, 0.1, GameObject.right, GameObject.bot, 100, "boss", "rebote", "serpiente", bossI);
     //int nEjecuciones, int numeroNaves, float inicialX, float inicialY, float vel, float acc, float dir, String tipoMejora, String tipoMov
-    FabricaNaves mejora = new FabricaMejoras(1, 1, width/2.0, height/2-100, 1.0, 0.0, GameObject.bot, "Triple", "normal");
-    FabricaNaves mejora2 = new FabricaMejoras(1, 1, (width/2.0) + 200, height/2-100, 5.0, 0.0, GameObject.bot, "Serpiente", "normal");
+    FabricaNaves mejora = new FabricaMejoras(1, 1, width/2.0, height/2-100, 0.0, 0.0, GameObject.bot, "Triple", "normal");
+    FabricaNaves mejora2 = new FabricaMejoras(1, 1, (width/2.0) + 200, height/2-100, 5.0, 0.0, GameObject.right, "Serpiente", "rebote");
     FabricaNaves mejora3 = new FabricaMejoras(1, 1, (width/2.0) - 200, height/2-100, 10.0, 5.0, GameObject.bot, "Limon", "normal");
 
     Flota e1 = new Flota(0);
     Fase f1 = new Fase(1);
     Nivel nivel1 = new Nivel();
     
-    e1.addFabrica(mejora);
+    e1.addFabrica(boss);
     e1.addFabrica(mejora2);
     e1.addFabrica(mejora3);
     f1.addFlota(e1);
@@ -231,7 +258,7 @@ class FabricaNaves{
   protected PImage asset;
   protected float offsetX = 0;
   protected float offsetY = 0;
-  protected float frequency = 2.5;
+  protected float frequency = 2500;
   protected int damage = 1;
   protected PImage bulletI = bulletB;
   protected float dirShoot;
@@ -253,7 +280,7 @@ class FabricaNaves{
     this.nEjecuciones = nEjecuciones;
     this.dirShoot = dirShoot;
   }
-
+  
   FabricaNaves(int nEjecuciones, int numeroNaves, float inicialX, float inicialY, float vel, float acc, float dir, String tipoMov){
     this.numeroNaves = numeroNaves;
     this.inicialX = inicialX;
@@ -331,9 +358,12 @@ class FabricaNaves{
         break;
       
       case "boss":
-        this.asset.resize(100, 100);
-        EnemyShip o = new EnemyShip(this.asset, this.tipoNave, this.inicialX+this.offsetX, this.inicialY+this.offsetY, this.vel, this.acc, this.dir, this.hitPoints);      
-        o.setWeapon(this.bulletI, this.tipoArma, this.damage, this.dirShoot, 10, this.frequency, color(255,0,0));
+        BossShip o = new BossShip(this.asset, this.tipoNave, this.inicialX+this.offsetX, this.inicialY+this.offsetY, this.vel, this.acc, this.dir, this.hitPoints);      
+        o.setWeapon(bigBulletBoss, this.tipoArma, this.damage, this.dirShoot, 10, 500, color(255,0,0));
+        o.setWeapon(bigBulletBoss, "triple", this.damage, this.dirShoot, 10, 1000, color(255,0,0));
+        o.setWeapon(bigBulletBoss, "muro", this.damage, this.dirShoot, 10, 3000, color(255,0,0));  
+        o.setWeapon(bigBulletBoss, "limon", this.damage, this.dirShoot, 10, 3000, color(255,0,0));
+        //o.setWeapon(bigBulletBoss, this.tipoArma, this.damage, this.dirShoot, 10, this.frequency, color(255,0,0));
         break;
     }
   }
@@ -370,7 +400,7 @@ class FabricaMejoras extends FabricaNaves{
   
   @Override
   void crearEscuadron(){
-    new Mejora(this.tipoEscuadron, 10, this.tipoMejora, this.inicialX, this.inicialY, this.vel, this.acc, this.dir);
+    new Mejora(this.tipoEscuadron, 60, this.tipoMejora, this.inicialX, this.inicialY, this.vel, this.acc, this.dir);
   }
 }
 

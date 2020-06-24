@@ -53,11 +53,16 @@ PImage shipI;
 PImage bossI;
 PImage bulletS;
 PImage bulletB;
+PImage bigBulletBoss;
+PImage smallBulletBoss;
 PImage shipI1;
 PImage mejoraSerpiente;
 PImage mejoraTriple;
 PImage mejoraLimon;
+PImage mejoraCirculo;
 
+//Hilos
+HiloGeneracionNivel hilo2;
 Juego juego;
 void setup() {
   size(1280, 720, P3D);
@@ -67,11 +72,14 @@ void setup() {
   shipI=loadImage("./Assets/Images/Space Ship.png");
   bossI=loadImage("./Assets/Images/Boss - UFO.png");
   bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
-  bulletB=loadImage("./Assets/Images/Boss small bullet.png");
+  bulletB=loadImage("./Assets/Images/Satellite small bullet.png");
   shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
+  bigBulletBoss = loadImage("./Assets/Images/Boss big bullet.png");
+  smallBulletBoss = loadImage("./Assets/Images/Boss small bullet.png");
   mejoraSerpiente = loadImage("./Assets/Images/Upgrade - Snake shot.png");
   mejoraTriple = loadImage("./Assets/Images/Upgrade - Triple shot.png");
   mejoraLimon = loadImage("./Assets/Images/Upgrade - Lemon shot.png");  
+  mejoraCirculo = loadImage("./Assets/Images/Upgrade - Circle shot.png");
   //Cosas
   scene = GameScenes.MAIN_MENU;
   cam = new Capture(this, 1280, 720);
@@ -119,7 +127,7 @@ void initGame(){
   setupObjects();
   juego = new Juego();
   juego.cargarNivelesPredeterminados();
-  HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
+  hilo2 = new HiloGeneracionNivel();
 }
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
@@ -128,12 +136,11 @@ void setupObjects() {
   shipI1.resize(50, 50);
   bulletB.resize(20, 20);
   //naves
-  
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 10);
-  jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "serpiente", 1, 270.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "limon", 1, 270.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "normal",    1, 270.0, 10, 150, color(0,255,0));
+  jugador1.setWeapon(bulletS, "triple",    1, 270.0, 10, 150, color(255,0,255));
+  jugador1.setWeapon(bulletS, "serpiente", 1, 270.0, 10, 150, color(255,0,255));
+  jugador1.setWeapon(bulletS, "limon",     1, 270.0, 10, 150, color(255,0,255));
   
 }
 
@@ -160,7 +167,7 @@ void drawGame (){
   if(y>=height){
     y=0;
   }else{
-    y=y+20;
+    y=y+5;
   }
   
   y2=y-back.height;
@@ -176,7 +183,7 @@ void drawGame (){
   //println(cdController.getRecognizedRect());
   
   //Arrancamos los hilos
-  timer = millis() / 1000;
+  timer = millis();
   for(int i = 0; i< GameObject.listaObjetos.size(); i++){
     GameObject o = GameObject.listaObjetos.get(i);
     o.show();
@@ -251,6 +258,34 @@ public class HiloGeneracionNivel implements Runnable {
   }
 }
 
+int sCount = 0;
+int s2Count = 0;
+public class HiloSonido implements Runnable {
+  String name;
+  String type;
+  Thread t;
+  int i ;
+  
+  GameObject object;
+  public HiloSonido(String s){
+    name = "hilo -> HiloSonido";
+    this.type = s;
+    t = new Thread(this, name);
+    t.start();
+    System.out.println("New thread: " + name);
+  }
+
+  public void run(){
+    switch(type){
+      case "shoot":
+        playShootSound();
+        break;
+      case "explosion":
+        playExplosionSound();
+        break;
+    }
+  }
+}
 void objectController(GameObject obj){
     // Sección de jugador
     obj.movement();
@@ -260,7 +295,7 @@ void objectController(GameObject obj){
       if (objS.hasWeapon()){
         Weapon mWeapon = objS.getWeapon();
         if(mWeapon.frequencyShoot > 0     &&
-           objS.hasExited(0) == false     &&
+           objS.hasExited(30) == false     &&
            timer - mWeapon.internalTimer >= mWeapon.frequencyShoot){
           objS.shoot();
           mWeapon.internalTimer = timer;
@@ -333,11 +368,14 @@ void objectController(GameObject obj){
     }
 }
 
-void playshootSound(){
+void playShootSound(){
+    //if((20 - sCount) > 0) 
     this.shootSound.play();
 }
 
+
 void playExplosionSound(){
+    //if((20 - s2Count) > 0) 
     this.explosionSound.play();
 }
 

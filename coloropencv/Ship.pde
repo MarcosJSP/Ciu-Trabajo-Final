@@ -12,12 +12,12 @@ class Ship extends GameObject {
     this.locationV.set(x,y);
     this.hitPoints = hitPoints;
   }
- //<>//
+ //<>// //<>//
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, float freqShoot, color col){
     weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>// //<>//
   }
 
-  //Constructor alternativo sin freq de disparo //<>//
+  //Constructor alternativo sin freq de disparo //<>// //<>//
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
     weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>// //<>//
   }
@@ -80,43 +80,14 @@ class Ship extends GameObject {
     }
   }
 
-/*
-  @Override
-  void movementEffects(){
-    switch(type){
-      case "serpiente":
-        this.angle += this.angleVariation;
-        if((this.angle > this.angleR+45) || (this.angle < this.angleR-45)){
-          this.angleVariation *= -1;
-        }
-        break;
-
-      case "rebote":
-        if(this.hasExited(-1)){
-          this.angle = this.angle+180;
-          this.imageRotation = this.imageRotation+180;
-          Iterator iter = this.weapons.iterator();
-
-          while (iter.hasNext()){
-            Weapon weapon = (Weapon) iter.next();
-            weapon.angle = weapon.angle + 180;
-            weapon.offset.rotate(weapon.angle + 180);
-            weapon.offset = PVector.fromAngle(radians(this.angle));
-            weapon.offset.setMag(this.objectSize[1]);
-          }
-        }
-        break;
-    }
-  }
-
-*/
-
   void shoot(){
     if(weapons != null) {
       weapons.get(this.n).shoot(this.velocityV);
-      thread("playshootSound");
+      new HiloSonido("shoot");
+      //thread("playshootSound");
       if(weaponTimer>0){
         weaponTimer--;
+        println(weaponTimer);
       }else if(weaponTimer == 0){
         this.changeWeapon(0);
         weaponTimer = -1;
@@ -135,10 +106,11 @@ class Ship extends GameObject {
       return true;
     }
   }
+
   void sufferDamage(int damage){
     this.hitPoints -= damage;
     if(this.hitPoints <= 0){
-      thread("playExplosionSound");
+      new HiloSonido("explosion");
       this.die();
       println("Oh Vaya, ha muerto por disparos:" + this);
     }
