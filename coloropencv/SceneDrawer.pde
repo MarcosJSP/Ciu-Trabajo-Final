@@ -1,6 +1,6 @@
 class SceneDrawer{
   
-  PImage modal, thiccckModal;
+  PImage modal, thiccckModal, semitransparentBackground;
   PFont robotoRegular, robotoBold;
 
   SceneDrawer (){
@@ -8,6 +8,7 @@ class SceneDrawer{
     robotoBold=createFont("Verdana Bold", 54);
     modal = loadImage("./Assets/Images/Card.png");
     thiccckModal = loadImage("./Assets/Images/Thiccck card.png");
+    semitransparentBackground = loadImage("./Assets/Images/Transparent background.png");
     // confirmButton = loadImage("./Assets/Confirm button.png");
   }
   
@@ -106,6 +107,10 @@ class SceneDrawer{
 
     //paint modal
     push();
+    
+    //paint background transparency
+    image(semitransparentBackground,0,0);
+
     translate(width/2, height/2);
     translate(-thiccckModal.width/2, - thiccckModal.height/2);
 

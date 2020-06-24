@@ -147,14 +147,16 @@ void setupObjects() {
 }
 
 void draw() {
-  background(0);
   println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   
   if (scene == GameScenes.DEBUG_MODE) {
+    background(0);
     sceneDrawer.drawDebugScreen(cdController);
   }else if (scene == GameScenes.MAIN_MENU) {
+    background(0);
     sceneDrawer.drawIngameScreen(cdController, confirmButton, quitButton);
   }else if (scene == GameScenes.GAME) {
+    background(0);
     drawGame();
   }else if(scene == GameScenes.WIN){
     sceneDrawer.gameEndScreen(cdController, playAgainButton, quitButton2, true);
