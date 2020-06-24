@@ -11,7 +11,7 @@ class Weapon{
   PImage balaI;
   float [] shipSize;
   float frequencyShoot = 0;
-  float internalTimer = millis() / 1000;
+  float internalTimer = 0;
 
   Weapon(PImage asset, String type, float angle, int size, float[] shipSize, int damage, float seconds, Ship myShip){
     this.size=size;
@@ -27,6 +27,7 @@ class Weapon{
     this.myShip = myShip;
     //this.balas = new ArrayList<Bullet>();
     this.frequencyShoot = seconds;
+    this.internalTimer = seconds;
   }
   
   //Constructor alternativo sin frequencia de disparo

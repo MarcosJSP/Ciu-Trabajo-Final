@@ -3,6 +3,7 @@ class EnemyShip extends Ship {
   EnemyShip(PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints) {
     super(imagen, type, x, y, vel, acc, angle, hitPoints);
     this.setimageRotation(this.imageRotation+180);
+    this.bulletI = bulletS;
   }
 
   @Override

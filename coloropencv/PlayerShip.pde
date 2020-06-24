@@ -6,6 +6,7 @@ class PlayerShip extends Ship {
     super(null, null, x, y, vel, acc, angle,hitPoints);
     this.objectSize[0] = size;
     this.objectSize[1] = size;
+    this.bulletI = bulletS;
   }
 
   //Quiza quitas la vel, acc y angle y fijar los valores

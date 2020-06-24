@@ -249,7 +249,6 @@ public class GameObject extends GameObjectUniverse{
     }
   }
 
-
   void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
      
@@ -285,7 +284,6 @@ public class GameObject extends GameObjectUniverse{
 
   //mirar teoria de hitboxx
   boolean hasExited(float offset){
-
     float axright = this.locationV.x + this.hitBox.getWidth();
     float axleft  = this.locationV.x - this.hitBox.getWidth();
     float aytop = this.locationV.y - this.hitBox.getHeight();

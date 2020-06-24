@@ -54,6 +54,9 @@ PImage bossI;
 PImage bulletS;
 PImage bulletB;
 PImage shipI1;
+PImage mejoraSerpiente;
+PImage mejoraTriple;
+PImage mejoraLimon;
 
 Juego juego;
 void setup() {
@@ -62,11 +65,13 @@ void setup() {
   
   //Inicializamos las imagenes
   shipI=loadImage("./Assets/Images/Space Ship.png");
-  bossI=loadImage("./Assets/Boss - UFO.png");
+  bossI=loadImage("./Assets/Images/Boss - UFO.png");
   bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
   bulletB=loadImage("./Assets/Images/Boss small bullet.png");
   shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
-  
+  mejoraSerpiente = loadImage("./Assets/Images/Upgrade - Snake shot.png");
+  mejoraTriple = loadImage("./Assets/Images/Upgrade - Triple shot.png");
+  mejoraLimon = loadImage("./Assets/Images/Upgrade - Lemon shot.png");  
   //Cosas
   scene = GameScenes.MAIN_MENU;
   cam = new Capture(this, 1280, 720);
@@ -80,7 +85,6 @@ void setup() {
   explosionSound.amp(0.1);
   cdController = new CDController(cam, ingameCDCalibrator);
   
-
   value = 5;
   y=0;
   y2=0;
@@ -113,13 +117,9 @@ void setup() {
 void initGame(){
   GameObject.listaObjetos.clear();
   setupObjects();
-  //PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints
-  EnemyShip s1 = new EnemyShip(shipI1, "rebote", width/2.0, width/2.0, 2, 2, GameObject.bot, 3);
-  s1.setWeapon(bulletS, "triple", 1, GameObject.bot, 10, 3,color(0,255,0));
-  
-  //juego = new Juego();
-  //juego.cargarNivelesPredeterminados();
-  //HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
+  juego = new Juego();
+  juego.cargarNivelesPredeterminados();
+  HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
 }
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
@@ -128,10 +128,13 @@ void setupObjects() {
   shipI1.resize(50, 50);
   bulletB.resize(20, 20);
   //naves
+  
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 10);
   jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
-  //jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
-  //jugador1.setWeapon(bulletS, "limon", 1, 180.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "serpiente", 1, 270.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "limon", 1, 270.0, 10, color(255,0,255));
+  
 }
 
 void draw() {
@@ -166,7 +169,7 @@ void drawGame (){
   //back.resize(width, height);
   image(back, 0, y);
   image(back, 0, y2);
-  for(int i = 0; i < jugador1.hitPoints; i++) {
+  for(int i = 0; i < jugador1.hitPoints; i++){
       image(hitPoints_image, (i*35)+20, 30);
   }
   //image(cdController.getFilteredImage(),0,0);
@@ -257,6 +260,7 @@ void objectController(GameObject obj){
       if (objS.hasWeapon()){
         Weapon mWeapon = objS.getWeapon();
         if(mWeapon.frequencyShoot > 0     &&
+           objS.hasExited(0) == false     &&
            timer - mWeapon.internalTimer >= mWeapon.frequencyShoot){
           objS.shoot();
           mWeapon.internalTimer = timer;
@@ -275,12 +279,21 @@ void objectController(GameObject obj){
         Iterator ite = GameObject.listaObjetos.copy().lista.iterator();
         while ( ite.hasNext() ){
           GameObject o = (GameObject)ite.next();
+          //Comprobamos las colisiones con naves enemigas
           if( o instanceof EnemyShip){
             EnemyShip e = (EnemyShip) o;
             PlayerShip p = (PlayerShip) obj;
             if(p.hasCollisioned(e)){
               e.die();
               p.sufferDamage(1);
+            }
+          //Comprobamos las colisiones con Mejoras
+          }else if( o instanceof Mejora){
+            PlayerShip p = (PlayerShip) obj;
+            Mejora m = (Mejora) o;
+            if (p.hasCollisioned(m)){
+              m.usarMejora(p); 
+              m.die();
             }
           }
         }
@@ -314,8 +327,8 @@ void objectController(GameObject obj){
     // seccion de colisiones
     // exterior
     synchronized(GameObject.listaObjetos){
-      if (obj.hasExited(200)){
-          obj.die();
+      if (obj.hasExited(600)){
+        obj.die();
       }
     }
 }

@@ -8,7 +8,7 @@ class SceneDrawer{
     robotoBold=createFont("Verdana Bold", 54);
     modal = loadImage("./Assets/Images/Card.png");
     thiccckModal = loadImage("./Assets/Images/Thiccck card.png");
-    // confirmButton = loadImage("./Assets/Confirm button.png");
+    //confirmButton = loadImage("./Assets/Confirm button.png");
   }
   
   void drawDebugScreen(CDController cdc) {
