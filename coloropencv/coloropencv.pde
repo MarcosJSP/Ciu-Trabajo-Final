@@ -308,8 +308,12 @@ void objectController(GameObject obj){
     if (obj instanceof PlayerShip) {
       Rect posRect=cdController.getRecognizedRect();
       if(posRect!= null){
-        posX=posRect.x + posRect.width/2;
-        posY=posRect.y + posRect.height/2;
+        
+        int newPosX = posRect.x + posRect.width/2;
+        int newPosY = posRect.y + posRect.height/2;
+        
+        posX=round(lerp(posX,newPosX,.5));
+        posY=round(lerp(posY,newPosY,.5));
       }
       obj.setPosition(posX, posY);
       if (this.frameCount%15 == 0){
