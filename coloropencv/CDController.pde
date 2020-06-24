@@ -16,11 +16,9 @@ class CDController {
   CDController(Capture cam, CDCalibrator cdCalibrator) {
     this.cam=cam;
     this.cdCalibrator = cdCalibrator;
-    cam.start();
-    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-    img = new CVImage(cam.width, cam.height);
-    auximg=new CVImage(cam.width, cam.height);
+    img = new CVImage(width, height);
+    //auximg=new CVImage(cam.width, cam.height);
   }
 
   PImage mirrorImage(PImage img) {
@@ -44,27 +42,28 @@ class CDController {
     Mat mat = img.getBGR();
     Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGR2HSV);
 
-    //Suavizamos la imagen en escala Hsv
+    // //Suavizamos la imagen en escala Hsv
     Imgproc.medianBlur(mat, mat, 3);
 
-    //Resaltamos el color que nos interesa
+    // //Resaltamos el color que nos interesa
     Scalar lowerHSV = cdCalibrator.getLowerHSV();
     Scalar upperHSV = cdCalibrator.getUpperHSV();
     Core.inRange(mat, lowerHSV, upperHSV, mat);
 
-    //Erosionamos la imagen
+    // //Erosionamos la imagen
     int erosion_size = 4;
     Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(erosion_size, erosion_size));
     Imgproc.erode(mat, mat, element);
 
-    //Dilatamos la imagen
+    // //Dilatamos la imagen
     int dilation_size = 30;
     Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(dilation_size, dilation_size));
     Imgproc.dilate(mat, mat, element1);
 
     //Hallamos la posición y el tamaño del objeto más grande identificado
     ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-    Imgproc.findContours(mat, contours, mat, 1, 1);
+   
+    Imgproc.findContours(mat, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
     if (contours.size() > 0) {
       Rect lastRect = getRecognizedRect();
       if(lastRect==null){
@@ -87,11 +86,12 @@ class CDController {
               }
           }
       }
-      contours.clear();
       
     } else {
       setRecognizedRect(null);
     }
+
+    contours.clear();
 
     //Finalmente actualizamos la imagen con los filtros
     img.copyTo(mat);

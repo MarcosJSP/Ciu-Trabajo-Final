@@ -33,7 +33,7 @@ int posX;
 int posY;
 int y;
 int y2;
-Capture cam;
+
 PImage back;
 SoundFile shootSound;
 SoundFile explosionSound;
@@ -61,6 +61,7 @@ PImage shipI1;
 Juego juego;
 void setup() {
   size(1280, 720, P3D);
+  System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
   
   //Inicializamos las imagenes
   shipI=loadImage("./Assets/Images/Space Ship.png");
@@ -71,7 +72,8 @@ void setup() {
   
   //Cosas
   scene = GameScenes.MAIN_MENU;
-  cam = new Capture(this, 1280, 720);
+  Capture cam = new Capture(this, 1280, 720);
+  cam.start();
 
   debugCDCalibrator = new DebugCDCalibrator();
   ingameCDCalibrator = new InGameCDCalibrator();
@@ -149,7 +151,7 @@ void setupObjects() {
 }
 
 void draw() {
-  println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
+  //println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   background(0);
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
@@ -441,7 +443,9 @@ void mouseReleased(){
 }
 
 void captureEvent(Capture c){
-  c.read();
-  //HiloCamara hilo1 = new HiloCamara();
-  cdController.updateColorDetection();
+  if (c != null && c.available()){
+    c.read();
+    HiloCamara hilo1 = new HiloCamara();
+    //cdController.updateColorDetection();
+  }
 }
