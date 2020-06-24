@@ -1,10 +1,12 @@
 class PlayerShip extends Ship {
 
+  
   //Constructor sin imagen (necesitamos tamaño)
   PlayerShip(float x, float y, float vel, float acc, float angle, float size,int hitPoints) {
     super(null, null, x, y, vel, acc, angle,hitPoints);
     this.objectSize[0] = size;
     this.objectSize[1] = size;
+    this.bulletI = bulletS;
   }
 
   //Quiza quitas la vel, acc y angle y fijar los valores

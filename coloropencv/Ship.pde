@@ -1,30 +1,39 @@
 import processing.sound.*;
 
 class Ship extends GameObject {
-  
   int hitPoints;
   int n = 0;
   ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+  PImage bulletI;
+  int weaponTimer = -1;
+
   Ship(PImage imagen, String type, float x, float y, float vel, float acc, float angle, int hitPoints) {
     super(imagen, type, x, y, vel, acc, angle);
     this.locationV.set(x,y);
     this.hitPoints = hitPoints;
-    
   }
-
+ //<>// //<>//
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, float freqShoot, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, freqShoot ,this));  //<>// //<>//
   }
 
-  //Constructor alternativo sin freq de disparo
+  //Constructor alternativo sin freq de disparo //<>// //<>//
   void setWeapon(PImage bulletI, String tipo, int damage, float angle, int size, color col){
-    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>//
+    weapons.add(new Weapon(bulletI, tipo, angle, size, objectSize, damage, this));  //<>// //<>//
   }
-
 
   void changeWeapon(int n){
     if (n < weapons.size()){
       this.n = n;
+    }else{
+      println("Número de arma incorrecto");
+    }
+  }
+
+  void changeWeaponT(int n, int weaponTimer){
+    if (n < weapons.size()){
+      this.n = n;
+      this.weaponTimer = weaponTimer;
     }else{
       println("Número de arma incorrecto");
     }
@@ -71,44 +80,21 @@ class Ship extends GameObject {
     }
   }
 
-  @Override
-  void movementEffects(){
-    switch(type){
-      case "serpiente":
-        this.angle += this.angleVariation;
-        if((this.angle > this.angleR+45) || (this.angle < this.angleR-45)){
-          this.angleVariation *= -1;
-        }
-        break;
-
-      case "rebote":
-        if(this.hasExited(-1)){
-          this.angle = this.angle+180;
-          this.imageRotation = this.imageRotation+180;
-          Iterator iter = this.weapons.iterator();
-
-          while (iter.hasNext()){
-            Weapon weapon = (Weapon) iter.next();
-            weapon.angle = weapon.angle + 180;
-            weapon.offset.rotate(weapon.angle + 180);
-            weapon.offset = PVector.fromAngle(radians(this.angle));
-            weapon.offset.setMag(this.objectSize[1]);
-          }
-        }
-        break;
-    }
-  }
-
   void shoot(){
     if(weapons != null) {
       weapons.get(this.n).shoot(this.velocityV);
-      thread("playshootSound");
-      
+      new HiloSonido("shoot");
+      //thread("playshootSound");
+      if(weaponTimer>0){
+        weaponTimer--;
+        println(weaponTimer);
+      }else if(weaponTimer == 0){
+        this.changeWeapon(0);
+        weaponTimer = -1;
+      }
     }
   }
   
-
-
   Weapon getWeapon(){
     return weapons.get(this.n);
   }
@@ -120,9 +106,11 @@ class Ship extends GameObject {
       return true;
     }
   }
+
   void sufferDamage(int damage){
     this.hitPoints -= damage;
     if(this.hitPoints <= 0){
+      new HiloSonido("explosion");
       this.die();
       println("Oh Vaya, ha muerto por disparos:" + this);
     }
@@ -138,7 +126,6 @@ class Ship extends GameObject {
   
   @Override
   void die(){
-     thread("playExplosionSound");
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
        
      //println("He muerto");

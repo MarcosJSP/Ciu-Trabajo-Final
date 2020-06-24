@@ -40,7 +40,6 @@ SoundFile explosionSound;
 PImage hitPoints_image;
 
 PlayerShip jugador1;
-EnemyShip enemigo1;
 Bullet bala1;
 
 int counter;
@@ -56,8 +55,16 @@ PImage shipI;
 PImage bossI;
 PImage bulletS;
 PImage bulletB;
+PImage bigBulletBoss;
+PImage smallBulletBoss;
 PImage shipI1;
+PImage mejoraSerpiente;
+PImage mejoraTriple;
+PImage mejoraLimon;
+PImage mejoraCirculo;
 
+//Hilos
+HiloGeneracionNivel hilo2;
 Juego juego;
 void setup() {
   size(1280, 720, P3D);
@@ -69,7 +76,12 @@ void setup() {
   bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
   bulletB=loadImage("./Assets/Images/Satellite small bullet.png");
   shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
-  
+  bigBulletBoss = loadImage("./Assets/Images/Boss big bullet.png");
+  smallBulletBoss = loadImage("./Assets/Images/Boss small bullet.png");
+  mejoraSerpiente = loadImage("./Assets/Images/Upgrade - Snake shot.png");
+  mejoraTriple = loadImage("./Assets/Images/Upgrade - Triple shot.png");
+  mejoraLimon = loadImage("./Assets/Images/Upgrade - Lemon shot.png");  
+  mejoraCirculo = loadImage("./Assets/Images/Upgrade - Circle shot.png");
   //Cosas
   scene = GameScenes.MAIN_MENU;
   Capture cam = new Capture(this, 1280, 720);
@@ -111,43 +123,29 @@ void setup() {
   hitPoints_image = loadImage("./Assets/Images/Heart.png");
 
   //Inicializamos el juego
-  initGame();
+  setupObjects();
 }
 
 void initGame(){
+  GameObject.listaObjetos.clear();
   setupObjects();
   juego = new Juego();
   juego.cargarNivelesPredeterminados();
-  HiloGeneracionNivel hilo2 = new HiloGeneracionNivel();
+  hilo2 = new HiloGeneracionNivel();
 }
-
 void setupObjects() {
   //PImage imagen, String type, float x, float y, float vel, float acc, float angle, float hitPoints
   //types -> normal, rebote, serpiente
   hitBoxBullets = false;
-  shipI1.resize(50,50);
-  bulletB.resize(20,20);
+  shipI1.resize(50, 50);
+  bulletB.resize(20, 20);
   //naves
   jugador1 = new PlayerShip(shipI, width/2, height/2, 5.0, 0.0, GameObject.top, 10);
-  //enemigo1 = new EnemyShip(bossI, "rebote", width/2, height/16, 5.0, 1.0, 0.0, 200);
-  //enemigo1.imageRotation = 270.0;
-  //jugador1.sethitBox(true);
-  jugador1.setWeapon(bulletS, "normal", 1, 270.0, 10, color(0,255,0));
-  jugador1.setWeapon(bulletS, "triple", 1, 270.0, 10, color(255,0,255));
-  jugador1.setWeapon(bulletS, "limon", 1, 180.0, 10, color(255,0,255));
+  jugador1.setWeapon(bulletS, "normal",    1, 270.0, 10, 150, color(0,255,0));
+  jugador1.setWeapon(bulletS, "triple",    1, 270.0, 10, 150, color(255,0,255));
+  jugador1.setWeapon(bulletS, "serpiente", 1, 270.0, 10, 150, color(255,0,255));
+  jugador1.setWeapon(bulletS, "limon",     1, 270.0, 10, 150, color(255,0,255));
   
-  /*
-  EnemyShip enemigoPrueba = new EnemyShip(shipI1, "rebote", 30, 30, 5.0, 0.1, GameObject.right, 50000);
-  enemigoPrueba.setimageRotation(0.0);
-  EnemyShip [] enemigosTest =  enemigoPrueba.multyCopy(20);
-  for (int i = 0; i < 20 ; i++){
-    enemigosTest[i].movement(30,(30*i)+30);
-    enemigosTest[i].setWeapon(bulletB, "rebote", 1, enemigosTest[i].getAngle(), 10, 0.0001, color(255,0,0));
-
-  }
- */
-  //armas
-  //enemigo1.setWeapon(bulletB, "normal", 1, 90.0, 10, color(255,0,0));
 }
 
 void draw() {
@@ -175,11 +173,13 @@ void drawGame (){
   if(y>=height){
     y=0;
   }else{
-    y=y+20;
+    y=y+5;
   }
   
   y2=y-back.height;
   //y = constrain(y, 0, back.height - height);
+  //surface.setSize(width, height);
+  //back.resize(width, height);
   image(back, 0, y);
   image(back, 0, y2);
 
@@ -202,11 +202,9 @@ void drawGame (){
 
   //image(cdController.getFilteredImage(),0,0);
   //println(cdController.getRecognizedRect());
-  //counter = GameObject.listaObjetos.size();
-  //-- Temporal prueba nivel
   
   //Arrancamos los hilos
-  timer = millis() / 1000;
+  timer = millis();
   for(int i = 0; i< GameObject.listaObjetos.size(); i++){
     GameObject o = GameObject.listaObjetos.get(i);
     o.show();
@@ -227,11 +225,6 @@ void drawGame (){
       image(hitPoints_image, i*35+45,45);
   }
 
-}
-
-synchronized void subCounter(){
-    counter = counter - 1;
-    println(counter);
 }
 
 //println("Frames: " + frameRate);
@@ -291,13 +284,44 @@ public class HiloGeneracionNivel implements Runnable {
   }
 }
 
+int sCount = 0;
+int s2Count = 0;
+public class HiloSonido implements Runnable {
+  String name;
+  String type;
+  Thread t;
+  int i ;
+  
+  GameObject object;
+  public HiloSonido(String s){
+    name = "hilo -> HiloSonido";
+    this.type = s;
+    t = new Thread(this, name);
+    t.start();
+    System.out.println("New thread: " + name);
+  }
+
+  public void run(){
+    switch(type){
+      case "shoot":
+        playShootSound();
+        break;
+      case "explosion":
+        playExplosionSound();
+        break;
+    }
+  }
+}
 void objectController(GameObject obj){
     // Sección de jugador
+    obj.movement();
+    
     if (obj instanceof Ship){
       Ship objS = (Ship) obj;
       if (objS.hasWeapon()){
         Weapon mWeapon = objS.getWeapon();
         if(mWeapon.frequencyShoot > 0     &&
+           objS.hasExited(30) == false     &&
            timer - mWeapon.internalTimer >= mWeapon.frequencyShoot){
           objS.shoot();
           mWeapon.internalTimer = timer;
@@ -316,9 +340,28 @@ void objectController(GameObject obj){
         posY=round(lerp(posY,newPosY,.5));
       }
       obj.setPosition(posX, posY);
-      if (this.frameCount%15 == 0){
-        obj.setimageRotation(rotation);
-        //rotation = (rotation + 15)%360;
+      synchronized(GameObject.listaObjetos){
+        Iterator ite = GameObject.listaObjetos.copy().lista.iterator();
+        while ( ite.hasNext() ){
+          GameObject o = (GameObject)ite.next();
+          //Comprobamos las colisiones con naves enemigas
+          if( o instanceof EnemyShip){
+            EnemyShip e = (EnemyShip) o;
+            PlayerShip p = (PlayerShip) obj;
+            if(p.hasCollisioned(e)){
+              e.die();
+              p.sufferDamage(1);
+            }
+          //Comprobamos las colisiones con Mejoras
+          }else if( o instanceof Mejora){
+            PlayerShip p = (PlayerShip) obj;
+            Mejora m = (Mejora) o;
+            if (p.hasCollisioned(m)){
+              m.usarMejora(p); 
+              m.die();
+            }
+          }
+        }
       }
     }
 
@@ -349,25 +392,20 @@ void objectController(GameObject obj){
     // seccion de colisiones
     // exterior
     synchronized(GameObject.listaObjetos){
-      if (obj.hasExited(200)){
-          obj.die();
+      if (obj.hasExited(600)){
+        obj.die();
       }
-    }
-
-
-    obj.movement();
-
-    // contador
-    if (count > 10) {
-      count = 0;
     }
 }
 
-void playshootSound(){
+void playShootSound(){
+    //if((20 - sCount) > 0) 
     this.shootSound.play();
 }
 
+
 void playExplosionSound(){
+    //if((20 - s2Count) > 0) 
     this.explosionSound.play();
 }
 
@@ -408,7 +446,7 @@ void mousePressed() {
   }else if (scene == GameScenes.GAME){
     if (mouseButton==LEFT) {
       jugador1.shoot();
-      Weapon actualWeapon = (Weapon) jugador1.weapons.get(i);
+      //Weapon actualWeapon = (Weapon) jugador1.weapons.get(i);
       //println("Estas usando el arma :" + actualWeapon.type);
     } else if(mouseButton==RIGHT){
       i = (i+1)%jugador1.weapons.size();
@@ -428,6 +466,7 @@ void mouseReleased(){
   if(scene == GameScenes.DEBUG_MODE){
   }else if(scene == GameScenes.MAIN_MENU){
     if (confirmButton.mouseReleased()) {
+        if(!gameHasStarted) initGame();
         scene = GameScenes.GAME;
     } else if (quitButton.mouseReleased()) {
       exit();
@@ -440,9 +479,7 @@ void mouseReleased(){
         GameObject.listaObjetos.clear();
       }
       initGame();
-      
       scene = GameScenes.GAME;
-        
     }
     if (quitButton2.mouseReleased()) {
       exit();
@@ -458,9 +495,9 @@ void mouseReleased(){
 }
 
 void captureEvent(Capture c){
-  if (c != null && c.available()){
-    c.read();
-    HiloCamara hilo1 = new HiloCamara();
-    //cdController.updateColorDetection();
-  }
+  c.read();
+  HiloCamara hilo1 = new HiloCamara();
+  // if (c != null && c.available()){
+  //   //cdController.updateColorDetection();
+  // }
 }

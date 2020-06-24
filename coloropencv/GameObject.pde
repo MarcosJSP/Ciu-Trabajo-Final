@@ -57,7 +57,7 @@ static class synchronizedGameObjectList {
 }
 static abstract class GameObjectUniverse {
   static final synchronizedGameObjectList listaObjetos = new synchronizedGameObjectList();
-  static final float top = 270.0 ;
+  static final float top = 270.0;
   static final float bot = 90.0;
   static final float right = 0.0;
   static final float left = 180.0;
@@ -177,7 +177,7 @@ public class GameObject extends GameObjectUniverse{
     return result;
   }
 
-  float[] getSize () {
+  float[] getSize(){
     return this.objectSize;
   }
 
@@ -249,7 +249,6 @@ public class GameObject extends GameObjectUniverse{
     }
   }
 
-
   void die(){
      if(GameObject.listaObjetos.contains(this)) GameObject.listaObjetos.remove(this);
      
@@ -285,7 +284,6 @@ public class GameObject extends GameObjectUniverse{
 
   //mirar teoria de hitboxx
   boolean hasExited(float offset){
-
     float axright = this.locationV.x + this.hitBox.getWidth();
     float axleft  = this.locationV.x - this.hitBox.getWidth();
     float aytop = this.locationV.y - this.hitBox.getHeight();
