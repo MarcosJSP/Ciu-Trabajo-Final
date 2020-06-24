@@ -38,7 +38,7 @@ class Slider{
     ){
       println(mouseX-pos.x);
       this.val = map(mouseX - pos.x, 0, this.w, this.min, this.max );
-      println(this.val);
+      //println(this.val);
     }
   }
 }

@@ -205,7 +205,7 @@ class FabricaNaves{
   private float offsetY;
   private float frequency = 2.5;
   private int damage = 1;
-  private PImage bulletI = loadImage("./Assets/Images/Boss small bullet.png");
+  private PImage bulletI = loadImage("./Assets/Images/Satellite small bullet.png");
   private float dirShoot;
   FabricaNaves(int nEjecuciones, int numeroNaves, float inicialX, float inicialY, float vel, float acc, float dir, float dirShoot, int hitPoints, String tipoEscuadron, String tipoNave, String tipoArma, PImage imagen){
     this.numeroNaves = numeroNaves;

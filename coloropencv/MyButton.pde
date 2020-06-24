@@ -46,7 +46,7 @@ class MyButton{
     }
 
     boolean mouseReleased(){
-        println(locked);
+        // println(locked);
         if(isOverButton && locked){
             locked = false;
             return true;

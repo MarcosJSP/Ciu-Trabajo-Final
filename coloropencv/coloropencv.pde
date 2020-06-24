@@ -66,7 +66,7 @@ void setup() {
   shipI=loadImage("./Assets/Images/Space Ship.png");
   bossI=loadImage("./Assets/Images/Boss - UFO.png");
   bulletS=loadImage("./Assets/Images/Space Ship Bullet.png");
-  bulletB=loadImage("./Assets/Images/Boss small bullet.png");
+  bulletB=loadImage("./Assets/Images/Satellite small bullet.png");
   shipI1=loadImage("./Assets/Images/Enemy - satellite.png");
   
   //Cosas
@@ -180,9 +180,7 @@ void drawGame (){
   //y = constrain(y, 0, back.height - height);
   image(back, 0, y);
   image(back, 0, y2);
-  for(int i = 0; i < jugador1.hitPoints; i++) {
-      image(hitPoints_image, i*35,50);
-  }
+  
 
   push();
   translate(width-configButton.w-45,configButton.h);
@@ -210,6 +208,10 @@ void drawGame (){
       executor.execute(worker);
       counter ++;
     }
+  }
+  
+  for(int i = 0; i < jugador1.hitPoints; i++) {
+      image(hitPoints_image, i*35+45,45);
   }
 
 }

@@ -1,6 +1,6 @@
 class SceneDrawer{
   
-  PImage modal, thiccckModal, semitransparentBackground;
+  PImage modal, thiccckModal;
   PFont robotoRegular, robotoBold;
 
   SceneDrawer (){
@@ -8,8 +8,6 @@ class SceneDrawer{
     robotoBold=createFont("Verdana Bold", 54);
     modal = loadImage("./Assets/Images/Card.png");
     thiccckModal = loadImage("./Assets/Images/Thiccck card.png");
-    semitransparentBackground = loadImage("./Assets/Images/Transparent background.png");
-    // confirmButton = loadImage("./Assets/Confirm button.png");
   }
   
   void drawDebugScreen(CDController cdc) {
@@ -117,9 +115,6 @@ class SceneDrawer{
 
     //paint modal
     push();
-    
-    //paint background transparency
-    image(semitransparentBackground,0,0);
 
     //paint config button
     push();
