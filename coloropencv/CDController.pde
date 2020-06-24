@@ -96,26 +96,6 @@ class CDController {
     //Finalmente actualizamos la imagen con los filtros
     img.copyTo(mat);
   }
-  
-  void draw() {
-    push();
-    translate(0, height/2-img.height/2);
-
-    //left
-    image(img, 0, 0);
-    translate(width/2, 0);
-
-    //right
-    //image(auximg, 0, 0);
-    image(lastCamFrame, 0,0);
-    Rect rect = getRecognizedRect();
-    if (rect!=null) {
-      noFill();
-      stroke(250, 0, 0);
-      rect(rect.x, rect.y, rect.width, rect.height);
-    }
-    pop();
-  }
 
   void setRecognizedRect(Rect rect) {
     this.recognizedRect = rect;

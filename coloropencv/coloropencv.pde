@@ -151,7 +151,7 @@ void setupObjects() {
 }
 
 void draw() {
-  //println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
+  println("Frames: " + frameRate + "\t-- Número de objetos: " + GameObject.listaObjetos.size());
   background(0);
   if (scene == GameScenes.DEBUG_MODE) {
     sceneDrawer.drawDebugScreen(cdController);
@@ -182,7 +182,18 @@ void drawGame (){
   //y = constrain(y, 0, back.height - height);
   image(back, 0, y);
   image(back, 0, y2);
-  
+
+  push();
+  tint(255,25);
+  image(cdController.getOriginalImage(), 0, 0);
+  Rect rect = cdController.getRecognizedRect();
+  //paint recognized color square
+  if (rect!=null) {
+    noFill();
+    stroke(100, 100, 100);
+    rect(rect.x, rect.y, rect.width, rect.height);
+  }
+  pop();
 
   push();
   translate(width-configButton.w-45,configButton.h);
@@ -297,10 +308,10 @@ void objectController(GameObject obj){
     if (obj instanceof PlayerShip) {
       Rect posRect=cdController.getRecognizedRect();
       if(posRect!= null){
-        posX=posRect.x;
-        posY=posRect.y;
+        posX=posRect.x + posRect.width/2;
+        posY=posRect.y + posRect.height/2;
       }
-      obj.setPosition(mouseX, mouseY);
+      obj.setPosition(posX, posY);
       if (this.frameCount%15 == 0){
         obj.setimageRotation(rotation);
         //rotation = (rotation + 15)%360;
